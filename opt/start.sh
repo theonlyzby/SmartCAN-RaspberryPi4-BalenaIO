@@ -25,6 +25,14 @@ if [ ! -d /data/mysql ]; then
 	chmod 777 /data/www/backups
 fi
 
+# Insert Hardware Info towards GPIO
+#rm /etc/wiringpi/cpuinfo
+mkdir /etc/wiringpi
+touch /etc/wiringpi/cpuinfo
+echo "Hardware        : ${WiringPiHardware}" >> /etc/wiringpi/cpuinfo
+echo "Revision        : ${WiringPiRevision}" >> /etc/wiringpi/cpuinfo
+echo "" >> /etc/wiringpi/cpuinfo
+
 # Update Restart Script
 #rm /data/sys-files/balena-restart.sh
 touch /data/sys-files/balena-restart.sh
