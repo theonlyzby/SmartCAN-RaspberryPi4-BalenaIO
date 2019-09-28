@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Send</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+        /* <![CDATA[ */
+    google.load("jquery", "1.4.2");
+
+    function showResult(status, response) {
+        $('#result').html('<strong>status:</strong> ' + status +
+        '<br /><strong>response:</strong><br />' + response);
+    };
+ 
+    google.setOnLoadCallback(function() {
+        $('#pub').submit(function() {
+            message = $('#message').val();
+       
+            /* Do not send empty message */
+            if (message == '') {
+                return false;
+            }
+       
+            $.ajax({
+                url: '/smartcan/envoi',
+                data: message,
+                dataType: 'text',
+                type: 'post',
+                success: function(responseText, textStatus, xhr) {
+                    showResult(textStatus, responseText);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    showResult(textStatus, errorThrown);
+                }
+            });
+            return false;
+        });
+    });
+        /* ]]> */
+        </script>
+
+    </head>
+    <body>
+        <form id="pub" method="post" action="/smartcan/envoi">
+            <input type="text" class="message" name="message" id="message" />
+            <input class="submit" type="submit" value="send" />
+        </form>
+        <div id="result"></div></div>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+
+Namufacturer:	0x01 = DomoCANv3.x
+
+Card Type:	0x50 = 16 Grad
+		0x60 = 16 IN
+
+Card Reference:	0 - 254		(Number in DomoCAN)
+
+Card Name:	VarChar(8)
+
+Element Type: 	
+		0x11 = OUT 0/1
+		0x12 = OUT Analogic
+
+		0x21 = IN Analogic
+		0x22 = IN 0/1
+		0x23 = OR
+		0x24 = AND
+		0x25 = NOR
+		0x26 = NAND
+		0x27 = Rapid Timer (1/10s)
+		0x28 = Slow Timer (s)
+		0x29 = Counter
+		0x2A = Counter-1
+
+
+Element Number: 0x00 - 0xFF

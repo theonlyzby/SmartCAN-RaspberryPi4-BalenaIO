@@ -1,0 +1,24 @@
+          <div id="contenu_gauche">
+            <img style="position: absolute; top: 82px; left: 376px;">
+            <div style="margin-top: 20px;">
+			<form class="w3-container w3-black" action="" method="post" id="frmLogin">
+				<div class="error-message">{ERROR_MSG}</div>	
+				<div class="field-group">
+					<div><label for="login"><b>Gebruiker</b></label></div>
+					<div><input class="w3-input w3-border w3-round-large w3-margin-bottom" name="member_name" type="text" value="{USER_NAME}" {AUTOFOCUS}></div>
+					<div class="field-group">
+						<div><label for="password"><b>Wachtwoord</b></label></div>
+						<div><input class="w3-input w3-border w3-round-large w3-margin-bottom" name="member_password" type="password" value="{PASSWORD}"></div>
+						<div class="field-group">
+							<div><input type="checkbox" class="w3-check w3-margin-bottom" name="remember" id="remember" {REMEMBER} />
+								<label for="remember-me"><b>Onthouden</b></label>
+							</div>
+							<div class="field-group"><br>
+								<div><input class="w3-btn w3-xxlarge w3-round-xlarge w3-light-grey w3-border w3-border-cyan w3-hover-cyan" type="submit" name="login" value="Login"></span></div>
+							</div> 
+						</div>
+					</div>
+				</div>
+			</form>
+            </div>
+          </div>

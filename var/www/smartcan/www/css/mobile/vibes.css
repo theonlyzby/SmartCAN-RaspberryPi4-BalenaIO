@@ -1,0 +1,50 @@
+.plan {
+  height: 350px;
+  float: left;
+  width: 500px;
+  margin-top: 0px;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.choix_plan {
+  font-size: 25px;
+  font-weight: bold;
+  color: grey;
+  padding: 330px 0px 0px 10px;
+}
+
+.choix_plan span {
+  color: #00B7EB;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.cacher {
+  display: none;
+}
+
+#conteneur_allumage {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border: 1px solid #cccccc;
+  height: 80px;
+  text-align: center;
+  width: 140px;
+  position: absolute;
+}
+
+#conteneur_allumage p {
+  color: grey;
+  font-size: 11px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0 0 10px 0;
+}
+
+#conteneur_allumage img {
+  height: 66px;
+  width: 59px;
+  margin: 8px 0 0 0;
+  padding: 0;
+}

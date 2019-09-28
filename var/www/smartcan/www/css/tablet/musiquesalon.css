@@ -1,0 +1,21 @@
+#musiques {
+  margin: 5px 0px 0px 0px;
+  font-size: 12px;
+  border-top: 1px solid grey;
+}
+
+#musiques p {
+  height: 25px; 
+  padding: 5px 10px 0px 10px; 
+  margin: 0px;
+}
+
+.direction {
+  top: 490px;
+  position: absolute;
+}
+
+.paire {
+  background-color: #CFCFCF;
+}
+

@@ -1,0 +1,153 @@
+html {
+  background-color: #000000;
+  margin: 0px;
+  padding: 0px; 
+}
+
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px; 
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+a img {
+  border: 0;
+}
+
+.conteneur {
+  border-bottom: 0px solid #d7d82f;
+  height: 100%;
+  left: 0;
+  margin: 0px;
+  padding: 0px;
+  position: absolute;
+  top: 0;
+  width: 800px;
+}
+
+.entete {
+  background: url("../../images/background-entete.png") repeat top left;
+  border-bottom: 3px solid #00B7EB;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+
+  height: 60px;
+  width: 100%;
+}
+
+.entete p {
+  color: #00B7EB;
+  font-size: 30px;
+  font-weight: bold;
+  height: 30px;
+  margin: 0px;
+  padding: 12px 0 0 10px;
+}
+
+.corps {
+  height: 495px;
+  text-align: left;
+  width: 800px;
+}
+
+.corps_gauche {
+  border-right: 1px solid black;
+  float: left;
+  height: 495px;
+  margin: 0;
+  padding: 0; 
+  width: 549px;
+}
+
+.corps_gauche #contenu_gauche {
+  margin: 0 auto 0 auto;
+  width: 500px;
+}
+
+.corps_droite {
+  background: url(../../images/menu.png) no-repeat 82% 4%;
+  height: 460px;
+  float: right;
+  text-align: center;
+  width: 250px;
+}
+
+.corps_droite table {
+  border: 0;
+  margin: 40px auto 0 auto;
+  width: 212px;
+}
+
+.corps_droite table td {
+  height: 126px;
+}
+
+.corps_droite table .column1, .corps_droite table .column3 {
+  width: 101px;
+}
+
+.corps_droite table .column2 {
+  width: 10px;
+}
+
+.corps_droite img {
+  height: 106px;
+  width: 101px;
+}
+
+
+
+.corps_bas {
+  background: url(../../images/menu.png) no-repeat 82% 4%;
+  height: 350px;
+  float: center;
+  text-align: center;
+  width: 530px;
+}
+
+.corps_bas table {
+  border: 0;
+  margin: 40px auto 0 auto;
+  width: 500px;
+}
+
+.corps_bas table td {
+  height: 156px;
+}
+
+.corps_bas table .column1, .corps_droite table .column3 {
+  width: 156px;
+}
+
+.corps_bas table .column2 {
+  width: 40px;
+}
+
+.corps_bas img {
+  height: 151px;
+  width: 156px;
+}
+
+
+
+
+#message {
+  font-weight: bold; 
+  opacity: 0.9; 
+  position: absolute; 
+  right: 20px; 
+  color: #FFFFFF; 
+  top: 15px; 
+  font-size: 14px;
+  font-weight: bold; 
+  background: url("../../images/background-entete.png") repeat top left;
+  padding: 5px; 
+  -moz-border-radius: 10px; 
+  -webkit-border-radius: 10px;
+}

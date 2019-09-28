@@ -1,0 +1,11 @@
+DELIMITER $$
+
+CREATE TRIGGER `test_after_insert` AFTER INSERT ON `test` 
+FOR EACH ROW BEGIN
+
+SET @exec_var = sys_exec(CONCAT('php /var/www/xyz/servers/dispatcher.php ', NEW.id));
+END;
+$$
+
+DELIMITER ;
+

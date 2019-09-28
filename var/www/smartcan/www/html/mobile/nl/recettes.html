@@ -1,0 +1,10 @@
+<div style="border-top: 1px solid grey; margin-top: 20px; height: 28px; padding: 5px 10px 5px 5px;">
+  <span style="font-size: 15px; color: grey; font-weight: bold;" id="page">RECETTEN</span>
+  <img src="./images/accueil.png" onClick="traitement(); xajax_listerCategories();" style="float: right;" />
+</div>
+<div id="categories">
+  <!-- BEGIN: CATEGORIES -->
+  <p {PAIRE}><span onClick="traitement(); xajax_listerRecettes('{IDCATEGORIE}');">{CATEGORIE}</span></p>
+  <!-- END: CATEGORIES -->
+  <img class="direction" style="left: 460px;" src="./images/suivant.png" onClick="traitement(); xajax_listerCategories('10');">
+</div>

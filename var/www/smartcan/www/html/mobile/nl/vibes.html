@@ -1,0 +1,19 @@
+          <div id="contenu_gauche">
+            <div style="margin-top: 0px; position: relative; z-index: 100;">
+              <span id="changetemp" ><p style="font-size: 28px; font-weight: bold;"></p></span>&nbsp;
+            </div>
+<!-- BEGIN: PLAN -->
+            <div class="plan cacher" style="background: url('./images/plans/black_bkg.png');{CACHER}" id="{LOCALISATION}">
+<!-- BEGIN: VIBE -->
+<div style="-webkit-border-radius: 10px; -moz-border-radius: 10px; width: 150px; text-align: center; background: #0D0D0D; opacity: 0.8; padding: 7px; position: absolute; top: {IMG_X}px; left: {IMG_Y}px; color: #00b7eb; font-family: roboto; font-size: 32px; font-weight: bold;" onClick=" xajax_vibecall({VIBE_ID});">
+ <span  id="{VIBE_ID}">{VIBE_DESC}</span> 
+</div>
+<!-- END: VIBE -->
+            </div>
+<!-- END: PLAN -->
+            <p class="choix_plan">
+<!-- BEGIN: NIVEAU -->
+              <a onclick="$('.cacher').css('display', 'none');$('#{LOCALISATION}').css('display', 'block');"><span>{PLANNAME}</span></a>
+<!-- END: NIVEAU -->
+            </p>
+          </div>

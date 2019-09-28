@@ -1,0 +1,100 @@
+          <head>
+		    <script type="text/javascript">
+			  
+			  function DivDiv()
+			  {
+				var oIframe = document.getElementById('ithermostat');
+				
+				var oDoc = (oIframe.contentWindow || oIframe.contentDocument);
+				if (oDoc.document) oDoc = oDoc.document;
+				oDoc.getElementById("div_info_moyenne").innerHTML = {MOYENNEMAISON};
+
+				return true;
+			  }
+			  function setMyDiv(userFile)
+			  {			
+			    
+			    document.getElementById("contenu_gauche").innerHTML = "<iframe name='ithermostat' id='ithermostat' src='"+userFile+"' width=400 height=450 frameborder=0 scrolling=no>";
+				//setTimeout(function() { DivDiv(); }, 1000);
+
+			  }
+			  
+			  var op = 0;
+			  
+			  function DIVfade(op,divID) {
+			    var o = document.getElementById(divID);
+			    opa = op/100;
+			    o.style.opacity = opa;
+			    op=op+5;
+			    if(op>=105) { return; }
+			    var cmd = "DIVfade(" + op.toString() + ",'" + divID.toString() + "');";
+			    setTimeout(cmd,50);
+			  }
+
+			 function showOverlay(divID,Ifocus) {
+			   var o = document.getElementById(divID);
+			   SurImpose('main',divID);
+			   o.style.visibility = 'visible';
+			   o.style.opacity = 0.05;
+			   op=op+5;
+			   //console.log("op="+op+", divID="+divID);
+			   DIVfade(op,divID);
+			   //document.getElementById(Ifocus).focus();
+			 }
+			 
+			 function hideOverlay(lID) {
+			   var o = document.getElementById(lID);
+			   o.style.visibility = 'hidden';
+			 }
+			 
+			 function SurImpose(Ref,Obj) {
+			  oElement = document.getElementById(Ref);
+			  ToMove =  document.getElementById(Obj);
+			  var iReturnValue = 0; 
+			  while( oElement != null ) {
+				iReturnValue += oElement.offsetTop;
+				oElement = oElement.offsetParent;
+			  }
+			  ToMove.style.top = (iReturnValue+5)+"px";
+			  oElement = document.getElementById('header');
+			  iReturnValue = 0; 
+			  while( oElement != null ) {
+				iReturnValue += oElement.offsetLeft;
+				oElement = oElement.offsetParent;
+			  }
+			  ToMove.style.left = (iReturnValue+5)+"px";
+			  return true;
+			}
+
+
+			  
+		    </script>
+		  </head>
+		  <body onLoad="setMyDiv('/smartcan/www/html/nest/nest.php?lang=nl');">
+		  <div id="ThermostatConfig"></div>
+		  <div id="main"  style="position: absolute;  top: 65px; left: 0px;">
+		  <div id="info" class="w3-container w3-text-black w3-margin-top"><span id="changetemp" onClick="go('chauffage')"><br><br>Temperatuur: </span>
+		   <strong><span id="moyenne" onClick="go('stats_temperature&idsonde=temperaturemaison');">{MOYENNEMAISON}</span> &deg;C</strong>
+		   (Buiten: <strong><span id="temperatureexterieure" onClick="go('stats_temperature&idsonde=temperatureexterieure')";>{TEMPERATUREEXTERIEURE}</span> &deg;C</strong>)
+		   , Setpoint: <span id="consigneconfort">{TEMPERATURE}</span> &deg;C, Verwarming: <span id="divchaudiere">{CHAUDIERE}</span>
+
+			
+		  </div>
+		  
+		  <div id="full">
+		  
+		  <table width=580px><tr>
+		  <td width=10%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+		  <td width=80%><div id="contenu_gauche" style="z-index: 10; align: right;"></div></td>
+		  </tr></table>
+		  </div>
+		  		    <div id="tohide" class="w3-container w3-text-white" style="display:none">Minimum: <span id="consigneminimum">{TEMPMINIMUM}</span> &deg;C, Afweizigheid:<span id="divabsence">{ABSENCE}</span>
+			<br> Verwarming Periode:<span id="divperiodechauffe">{PERIODECHAUFFE}</span>, Eind Verwarming Periode:<span id="divfinchauffe">{FINCHAUFFE}</span>,<br> Volgende:<span id="divprochainechauffe">{PROCHAINECHAUFFE}</span>
+			(Uur=<span id="divprochainechauffeH">{HOUR}</span>,Dag=<span id="divprochainechauffeD">{DD}</span>)
+			
+			</div>
+		  </div>
+		  
+
+		  
+		  </body>

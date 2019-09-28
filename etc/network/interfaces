@@ -1,0 +1,10 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+# Include files from /etc/network/interfaces.d:
+
+auto can0
+iface can0 inet manual
+pre-up ip link set $IFACE type can bitrate 500000
+up /sbin/ifconfig can0 up
+down /sbin/ifconfig can0 down
+
+source-directory /etc/network/interfaces.d

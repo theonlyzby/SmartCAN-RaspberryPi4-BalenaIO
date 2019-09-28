@@ -1,0 +1,1 @@
+tar -czvf ./smartBACKUP.tar.gz ./ --exclude='generate-smartbackuptar.sh' --exclude='smartBACKUP.tar.gz'

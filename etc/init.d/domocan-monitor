@@ -1,0 +1,20 @@
+### BEGIN INIT INFO
+# Provides: Monitors-DomoCAN-UDP-Server 
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Re-Starts the DomoCAN3.x UDP Server if crashed
+# Description:       Re-Starts the DomoCAN3.x UDP Server using start-stop-daemon
+### END INIT INFO
+
+#!/bin/bash
+
+DOMOCAN=`ps ax | grep domocan-server | grep -v grep | wc -l`
+
+if [ $DOMOCAN -eq 1 ]
+then
+exit
+else
+/etc/init.d/domocan-init start
+fi

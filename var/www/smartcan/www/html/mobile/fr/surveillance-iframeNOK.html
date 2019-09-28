@@ -1,0 +1,31 @@
+				<div id="contenu_gauche">
+
+            <div style="margin-top: -20px; position: relative; z-index: 100;">
+              <span id="changetemp" ><p style="font-size: 28px; font-weight: bold;"></p></span>&nbsp;<br>&nbsp;
+            </div>
+
+<!-- BEGIN: VIDEOSOURCE -->
+            <div class="video cacher" style="{CACHER}" id="{LOCALISATION}"  >
+			  
+			  <iframe id="getcam" width=528 height=360 ></iframe>
+				
+			  <script type="text/javascript" >
+
+				  $('#getcam').contents().find( "body" ).html(
+					'<form name="camform" id="camform" action="http://172.27.10.83/smartcan/www/cam-submit.php" method="get">'+
+					'<input type="hidden" name="name" value="value" />'+
+					'<input type="submit" name="formButton" id="formButton" />'+
+					'</form>');
+				  $('#getcam').contents().find('form')[0].submit();
+
+			  </script>
+
+            </div>
+			
+<!-- END: VIDEOSOURCE -->
+            <p class="choix_videosource">
+<!-- BEGIN: NIVEAU -->
+              <a onclick="$('.cacher').css('display', 'none');$('#{LOCALISATION}').css('display', 'block');"><span>{VIDEOSOURCENAME}</span></a>
+<!-- END: NIVEAU -->
+            </p>
+          </div>

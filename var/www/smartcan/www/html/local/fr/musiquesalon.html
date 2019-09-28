@@ -1,0 +1,28 @@
+<div style="font-size: 12px; width: 270px; float: left; text-align: center; margin-top: 7px; font-weight: bold;">
+  <img style="margin-top: 5px;" onClick="traitement(); xajax_action('precedent');" src="./images/precedent.png" />
+  <img src="./images/stop.png" onClick="traitement(); xajax_action('stop');" />
+  <img src="./images/play.png" onClick="traitement(); xajax_action('lire');" />
+  <img src="./images/pause.png" onClick="traitement(); xajax_action('pause');" />
+  <img src="./images/suivant.png" onClick="traitement(); xajax_action('suivant');" />
+</div>
+<div style="float: right; width: 270px; margin: 10px 5px 0px 0px; font-size: 12px;">
+  <img src="./images/{CUISINEIMG}.png" style="margin-left: 15px;" onClick="traitement(); xajax_balancetoggle('Right');" id="cuisine" />
+  <img src="./images/{SALONIMG}.png" style="margin-left: 5px;" onClick="traitement(); xajax_balancetoggle('Left');" id="salon" />
+  <img src="./images/volume_down.png" title="moins" style="vertical-align: top; margin: 5px 0px 0px 15px;" onClick="traitement(); xajax_baisser();">
+  <img src="./images/volume_up.png" title="plus" style="vertical-align: top; margin: 5px 0px 0px 0px;" onClick="traitement(); xajax_monter();"><br />
+</div>
+<div style="border-top: 1px solid grey; margin-top: 80px; padding: 5px 10px 5px 5px;">
+  <span style="font-size: 15px; color: grey; font-weight: bold;" id="page">BIBLIOTHEQUE</span>
+  <img src="./images/liste.png" onClick="traitement(); xajax_playlist();" style="float: right;" />
+  <img src="./images/bibliotheque.png" onClick="traitement(); xajax_lancer('');" style="float: right;" />
+  <img src="./images/radio.png" onClick="traitement(); xajax_radio('');" style="float: right;" />
+</div>
+<div id="musiques">
+  <!-- BEGIN: MUSIQUES -->
+  <p {PAIRE}><span onClick="traitement(); xajax_lancer('{MUSIQUECOMPLET}');">{MUSIQUE}</span><img onClick="traitement(); xajax_ajouter('{MUSIQUECOMPLET}');" src="./images/ajouter.png" style="float: right;" /></p>
+  <!-- END: MUSIQUES -->
+  <img class="direction" style="left: 460px;" src="./images/suivant.png" onClick="traitement(); xajax_lancer('', '10');">
+</div>
+<div style="font-weight: bold; text-align: center; margin-top: 10px; visibility: hidden;" id="vider" onClick="traitement(); xajax_playlistvider('');">
+  <img src="./images/vider.png" />
+</div>

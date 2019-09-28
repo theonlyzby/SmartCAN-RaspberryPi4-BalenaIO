@@ -1,0 +1,23 @@
+          <div id="contenu_gauche">
+            <img style="position: absolute; top: 82px; left: 376px;" src="./images/niveau.png" >
+            <div style="margin-top: 20px; font-size: 12px;">
+            Nacht Mode : <strong><span id="modenuit" onclick="traitement(); xajax_modenuit();">{MODENUIT}</span></strong>
+            </div>
+<!-- BEGIN: PLAN -->
+            <div class="plan cacher" style="background: url('./images/plans/plan_{LOCALISATION}.png');{CACHER}" id="{LOCALISATION}">
+              <div id="conteneur_allumage">
+                <img class="lumiere_on" id="03_0x10" src="./images/lumiere_on_all.png" onclick="traitement(); xajax_allumerall('{LOCALISATION}');" />
+                <img class="lumiere_off" id="03_0x10" src="./images/lumiere_off_all.png" onclick="traitement(); xajax_eteindreall('{LOCALISATION}');" />
+                <p class="allumage_global">Alle Lichten</p>
+              </div>
+<!-- BEGIN: AMPOULE -->
+<img id='LAMP_{LAMP_ID}' src='./images/outputs/{ICON}_{LUMIERE}.png' style="position: absolute; top: {IMG_X}px; left: {IMG_Y}px;" onclick='traitement(); xajax_inverser({MANUFACTURER},{LAMP_ID},{DELAI},{CONSIGNE}); ' />
+<!-- END: AMPOULE -->
+            </div>
+<!-- END: PLAN -->
+            <p class="choix_plan">
+<!-- BEGIN: NIVEAU -->
+              <a onclick="$('.cacher').css('display', 'none');$('#{LOCALISATION}').css('display', 'block');"><span>{PLANNAME}</span></a>
+<!-- END: NIVEAU -->
+            </p>
+          </div>

@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Listen</title>
+      <script type="text/javascript" src="jquery-1.4.4.min.js"></script>
+
+      <script type="text/javascript">
+        function listen(last_modified, etag) {
+         $.ajax({
+           'beforeSend': function(xhr) {
+             xhr.setRequestHeader("If-None-Match", etag);
+             xhr.setRequestHeader("If-Modified-Since", last_modified);
+            },
+            url: '/smartcan/reception',
+            dataType: 'text',
+            type: 'get',
+            cache: 'false',
+            success: function(data, textStatus, xhr) {
+              etag = xhr.getResponseHeader('Etag');
+              last_modified = xhr.getResponseHeader('Last-Modified');
+
+              window.parent.reception(data);
+
+              /* Start the next long poll. */
+              if ( etag == null ) {
+                setTimeout(function() {
+                  listen('', '');
+                }, 20000);
+              }
+              else {
+                listen(last_modified, etag);
+              }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+              listen('', '');
+            }
+          });
+        };
+
+        $(document).ready(function() {
+          setTimeout(function() {
+            listen('', '');
+          }, 500);
+        });
+
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

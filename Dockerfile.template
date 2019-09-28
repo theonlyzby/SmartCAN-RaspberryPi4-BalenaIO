@@ -1,0 +1,124 @@
+# base-image for node on any machine using a template variable,
+# see more about dockerfile templates here: http://docs.balena.io/deployment/docker-templates/
+# and about balena base images here: http://docs.balena.io/runtime/balena-base-images/
+# Note the node:slim image doesn't have node-gyp
+# FROM balenalib/raspberrypi3-debian:stretch
+# FROM balenalib/aarch64-debian:buster
+# FROM balenalib/raspberrypi3-64-debian:buster
+FROM balenalib/raspberrypi3-debian:buster
+
+# Use apt-get to Update/Upgrade and
+# Install all other required packages
+#RUN echo "deb http://deb.debian.org/debian stretch main non-free" >/etc/apt/sources.list
+RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y 
+RUN apt-get install -yq debconf-utils \
+       mariadb-client mariadb-common libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev wget cron sudo nano \
+       python3 python3-pip wpasupplicant sudo make gcc libpcre3 autoconf automake libtool net-tools \
+       php7.3 php7.3-curl php7.3-gd php7.3-fpm php7.3-cli php7.3-opcache php7.3-mysqli php7.3-xml php7.3-mbstring \
+       ntp samba samba-common-bin systemd git-core git cmake libusb-1.0-0-dev build-essential pkg-config \
+       libffi-dev libnacl-dev python3-dev curl wiringpi
+
+# Default mysql password
+RUN echo 'mariadb-server mysql-server/root_password password SmartCAN' | debconf-set-selections  \
+		&& echo 'mariadb-server mysql-server/root_password_again password SmartCAN' | debconf-set-selections
+  
+# Install MySQL Server (MariaDB)
+RUN apt-get install -y mariadb-server 
+# Configure DB to persistent /data folder
+RUN sed -i -e "s@^datadir.*@datadir = /data/mysql@" /etc/mysql/my.cnf
+RUN sed -i -e "s@^datadir.*@datadir = /data/mysql@" /etc/mysql/mariadb.conf.d/50-server.cnf
+
+#  Clean-up apt-get
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install RestCord - PHP Discord API (https://www.restcord.com/)
+RUN curl -s https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+RUN composer require restcord/restcord
+
+# Install required Python3 packages
+RUN pip3 install pytz
+RUN pip3 install --upgrade setuptools && pip3 install webexteamssdk
+# DiscordPy (https://discordpy.readthedocs.io/en/latest/intro.html#installing)
+RUN pip3 install -U discord.py
+
+#Install Openresty # openresty-1.13.6.2.tar.gz
+RUN cd /opt
+RUN wget https://openresty.org/download/openresty-1.15.8.2.tar.gz
+#RUN wget https://github.com/slact/nginx_http_push_module/archive/v0.99.16.tar.gz https://github.com/slact/nchan/archive/v0.99.16.tar.gz
+RUN wget https://github.com/slact/nchan/archive/v1.1.7.2.tar.gz
+RUN tar xzvf openresty-1.15.8.2.tar.gz
+RUN tar xzvf v1.1.7.2.tar.gz
+#    --add-dynamic-module=../nchan-0.99.16 \ 
+RUN cd ./openresty-1.15.8.2 && ./configure --prefix=/usr/local --conf-path=/usr/local/nginx/conf/nginx.conf \
+    --add-module=../nchan-1.1.7.2 \
+    --with-cc-opt="-I/usr/local/include" --with-ld-opt="-L/usr/local/lib" --with-pcre-jit \
+    --without-http_gzip_module --with-http_ssl_module --with-http_secure_link_module && make && sudo make install
+
+RUN rm openresty-1.15.8.2.tar.gz \
+      && rm v1.1.7.2.tar.gz \
+      && rm -R openresty-1.15.8.2 \
+      && rm -R nchan-1.1.7.2
+# Defines our working directory in container
+WORKDIR /
+
+# Copy GitHub Files
+# This will copy all files from our root to the working  directory in the container
+COPY . .
+
+# Move config files
+# RUN mv /var/config-files/* /*
+
+# Configure and start Samba
+RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
+
+# Install RTL-SDR Driver
+# Install dump1090
+RUN cd /srv \
+    && git clone git://git.osmocom.org/rtl-sdr.git \
+    && cd rtl-sdr \
+    && mkdir build \
+    && cd build \
+    && cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON \
+    && ldconfig \
+    && make \
+    && make install \
+    && ldconfig \
+    && cd /srv \
+    && git clone git://github.com/MalcolmRobb/dump1090.git \
+    && cd dump1090 \
+    && make \
+    && cd .. \
+    && printf 'blacklist dvb_usb_rtl28xxu\nblacklist rtl2832\nblacklist rtl2830\n' > nortl.conf \
+    && cp ./nortl.conf /etc/modprobe.d/no-rtl.conf
+
+# Install ZigBee Libcaot library (Ikea Tradfri and Philips Hue)
+RUN cd /opt && git clone --recursive https://github.com/obgm/libcoap.git \
+    && cd libcoap \
+    && git checkout dtls \
+    && git submodule update --init --recursive \
+    && ./autogen.sh \
+    && ./configure --disable-documentation --disable-shared \
+    && make \
+    && sudo make install \
+    && rm -R /opt/libcoap
+
+# Enable Required Services
+RUN chmod +x /etc/init.d/domocan-monitor
+RUN chmod +x /etc/init.d/domocan-init
+RUN systemctl enable domocan-init
+
+# Enable systemd init system in container
+#ENV INITSYSTEM on
+
+# Set correct TimeZone
+RUN cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime
+
+# Declares UDP Socket and enable local broadcast for DomoCAN server
+#RUN sysctl -w net.ipv4.conf.balena0.route_localnet=1
+EXPOSE 1470/udp
+
+# Restore crontab Configuration
+# RUN crontab /opt/crontab
+
+# Starts up the Docker on the device
+CMD [ "bash" , "/opt/start.sh"]
