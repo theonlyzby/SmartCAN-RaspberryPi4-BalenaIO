@@ -35,6 +35,7 @@ $msg["VARIABLES"]["InterfaceSurveillance"]["en"] = "Surveillance";
 $msg["VARIABLES"]["InterfaceTrains"]["en"] = "Train Timetable";
 $msg["VARIABLES"]["InterfaceMisc"]["en"] = "Misc";
 $msg["VARIABLES"]["DefaultPage"]["en"] = "Default Page";
+$msg["VARIABLES"]["Dump1090NotFound"]["en"] = "Dump1090 Server NOT found!";
 $msg["VARIABLES"]["Dump1090IP"]["en"] = "<u style=\"text-decoration:none;\" title=\"Dump1090 is one of the most popular ADS-B decoders that is used together with a RTL-SDR dongle. " .
 										"ADS-B stands for Automatic Dependant Surveillance Broadcast and is a system used by aircraft that broadcasts their GPS positions. " .
 										"It is a replacement for traditional reflection based radar systems.\">Dump1090 Server IP Address</u>&nbsp;";
@@ -50,12 +51,12 @@ $msg["VARIABLES"]["AdminFirstUse"]["fr"] = "Premi&egrave;re mise en place R&eacu
 $msg["VARIABLES"]["PageName"]["fr"] = "G&eacute;rer les Variables"; 
 $msg["VARIABLES"]["ERROREmptyAlias"]["fr"] = "Erreur: l'Alias ne peut \xEAtre vide!";
 $msg["VARIABLES"]["ERRORbadFormatAlias"]["fr"] = "Erreur: Votre alias ne peut contenir que les letrres, chiffres et underscore!";
-$msg["VARIABLES"]["ERRORpasswdTooShort"]["fr"] = "Erreur: Votre mot de passe doit contenir au minimum 6 caract\xE8res!!";
-$msg["VARIABLES"]["ERRORpasswdUserDiff"]["fr"] = "Erreur: Votre mot de passe doit \xEAtre diff\xE9rent de nom de l'utilisateur!!";
+$msg["VARIABLES"]["ERRORpasswdTooShort"]["fr"] = "Erreur: Votre mot de passe doit contenir au minimum 6 caractères!!";
+$msg["VARIABLES"]["ERRORpasswdUserDiff"]["fr"] = "Erreur: Votre mot de passe doit être différent de nom de l'utilisateur!!";
 $msg["VARIABLES"]["ERRORpasswdOneNumber"]["fr"] = "Erreur: Votre mot de passe doit contenir au moins un chiffre! (0-9)!";
 $msg["VARIABLES"]["ERRORpasswdOneLower"]["fr"] = "Erreur: Votre mot de passe doit contenir au moins une minuscule! (a-z)!";
 $msg["VARIABLES"]["ERRORpasswdOneUpper"]["fr"] = "Erreur: Votre mot de passe doit contenir dau moins une majuscule! (A-Z)!";
-$msg["VARIABLES"]["ERRORpasswdEmpty"]["fr"] = "Erreur: mot de passe vide ou pas confirm\xE9!";
+$msg["VARIABLES"]["ERRORpasswdEmpty"]["fr"] = "Erreur: mot de passe vide ou pas confirmé!";
 $msg["VARIABLES"]["ERRORpasswdSpecials"]["fr"] = "Erreur: n'utilisez pas de ! ici.";
 $msg["VARIABLES"]["ServerSecu"]["fr"] = "S&eacute;curit&eacute; Serveur:";
 $msg["VARIABLES"]["ConsoleAccess"]["fr"] = "Acc&egrave;s Console et SSH:";
@@ -76,6 +77,7 @@ $msg["VARIABLES"]["InterfaceWeather"]["fr"] = "M&eacute;t&eacute;o";
 $msg["VARIABLES"]["InterfaceSurveillance"]["fr"] = "Surveillance";
 $msg["VARIABLES"]["InterfaceTrains"]["fr"] = "Horaires de Train";
 $msg["VARIABLES"]["InterfaceMisc"]["fr"] = "Divers";
+$msg["VARIABLES"]["Dump1090NotFound"]["fr"] = "Serveur Dump1090 Server INTROUVABLE!";
 $msg["VARIABLES"]["Dump1090IP"]["fr"] = "<u style=\"text-decoration:none;\" title=\"Dump1090 est l'un des décodeurs ADS-B les plus populaires qui est utilisé avec un dongle RTL-SDR. " .
 										"ADS-B signifie Automatic Dependent Surveillance Broadcast (diffusion dépendante automatique) et est un système utilisé par les aéronefs " .
 										"qui diffuse leurs positions GPS. Il remplace les systèmes radar basés sur la réflexion traditionnelle.\">Adresse IP du Serveur Dump1090</u>&nbsp;";
@@ -117,6 +119,7 @@ $msg["VARIABLES"]["InterfaceSurveillance"]["nl"] = "Bewaking";
 $msg["VARIABLES"]["InterfaceTrains"]["nl"] = "Trein dienstregeling";
 $msg["VARIABLES"]["InterfaceMisc"]["nl"] = "Diversen";
 $msg["VARIABLES"]["DefaultPage"]["nl"] = "Default Page";
+$msg["VARIABLES"]["Dump1090NotFound"]["nl"] = "Dump1090 Server NIET gevond!";
 $msg["VARIABLES"]["Dump1090IP"]["nl"] = "<u style=\"text-decoration:none;\" title=\"Dump1090 is een van de meest populaire ADS-B-decoders die samen met een RTL-SDR-dongle wordt gebruikt. " .
 										"ADS-B staat voor Automatic Dependent Surveillance Broadcast en is een systeem dat wordt gebruikt door vliegtuigen die hun GPS-posities uitzenden. " .
 										"Het is een vervanging voor traditionele, op reflectie gebaseerde radarsystemen.\">Dump1090 Server IP Adres</u>&nbsp;";

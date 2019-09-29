@@ -3,6 +3,13 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 // Includes
 
+// Local functions
+function replace_string_in_file($filename, $string_to_replace, $replace_with){
+    $content=file_get_contents($filename);
+    $content_chunks=explode($string_to_replace, $content);
+    $content=implode($replace_with, $content_chunks);
+    file_put_contents($filename, $content);
+}
 
 // Need to add SSH PHP lib, via apt-get install libssh2-php
 
@@ -14,6 +21,8 @@ function BackupRestore() {
   global $DB;
   global $msg;
   global $Lang;
+  global $Linux_Mode;
+  $Sudo = ""; if($Linux_Mode != "balena.io") { $Sudo = "sudo "; }
   
   // Includes
   include_once "./lang/admin.module.BackupRestore.php";
@@ -135,11 +144,13 @@ function BackupRestore() {
   if ($action=="backUp") {
     //echo("Manual Backup<br>");
     $BackupDest = $_SERVER['DOCUMENT_ROOT']."/backups/";
-    exec("sudo mysqldump --opt --user=" . mysqli_LOGIN . " --password='".mysqli_real_escape_string($DB,mysqli_PWD)."' " . mysqli_DB . " > " . $BackupDest . "domotique.sql");
-	exec("sudo mysqldump --user=" . mysqli_LOGIN . " --password='".mysqli_real_escape_string($DB,mysqli_PWD)."' mysql user > " . $BackupDest . "mysql.sql");
-	exec("sudo pdbedit -e smbpasswd:" . $BackupDest . "samba-users.smbback");
+	$Sudo = ""; $Tar = "";
+	if($Linux_Mode != "balena.io") { $Sudo = "sudo "; $Tar = '/etc/network --exclude={"/etc/network/run","/etc/network/if*.d"}';}
+    exec($Sudo . "mysqldump --opt --user=" . mysqli_LOGIN . " --password='".mysqli_real_escape_string($DB,mysqli_PWD)."' " . mysqli_DB . " > " . $BackupDest . "domotique.sql");
+	exec($Sudo . "mysqldump --user=" . mysqli_LOGIN . " --password='".mysqli_real_escape_string($DB,mysqli_PWD)."' mysql user > " . $BackupDest . "mysql.sql");
+	exec($Sudo . "pdbedit -e smbpasswd:" . $BackupDest . "samba-users.smbback");
 	$fileName = date("Ymd-His-").'FULLsmartCAN-BACKUP.tar.gz';
-	exec('sudo tar -czvf '. $BackupDest.$fileName . " " .
+	exec($Sudo . 'tar -czvf '. $BackupDest.$fileName . " " .
 			$BackupDest . 'domotique.sql ' .
 			$BackupDest . 'mysql.sql ' .
 			$BackupDest . 'samba-users.smbback ' .
@@ -149,13 +160,11 @@ function BackupRestore() {
 			PATHBASE . '/www/images/plans ' .
 			PATHBASE . '/bin/domocan-server ' .
 			'/usr/local/nginx/conf/nginx.conf ' .
-			'/etc/network ' .
 			'/etc/passwd ' .
-			'/etc/shadow ' .
-			'--exclude={"/etc/network/run","/etc/network/if*.d"}');
-	exec('sudo rm ' . $BackupDest . 'domotique.sql');
-	exec('sudo rm ' . $BackupDest . 'mysql.sql');
-	exec('sudo rm ' . $BackupDest . 'samba-users.smbback');
+			'/etc/shadow ' . $Tar);
+	exec($Sudo . 'rm ' . $BackupDest . 'domotique.sql');
+	exec($Sudo . 'rm ' . $BackupDest . 'mysql.sql');
+	exec($Sudo . 'rm ' . $BackupDest . 'samba-users.smbback');
 	// Need to move?
 	if ($BackupDest!=$BackupDir) {
 	  // to Local?
@@ -268,28 +277,57 @@ function BackupRestore() {
 	} // END IF	
 	  
 	// UnTAR & Restore Files & DB
-	//echo("sudo /bin/tar zxvf ".$BackupDest . $fileName." -C /  2>&1<br>");
-	shell_exec("sudo /bin/tar zxvf ".$BackupDest . $fileName." -C /  2>&1");
+	//echo($Sudo . "/bin/tar zxvf ".$BackupDest . $fileName." -C /  2>&1<br>");
+	//echo(exec($Sudo . "chmod 777 ".$BackupDest . $fileName));
+	exec("sudo /bin/tar zxvf ".$BackupDest . $fileName." -C /  2>&1");
+	if (($Linux_Mode == "balena.io") && (is_dir('/var/www/backups'))) { 
+	  //rename("/var/www/backups/*.* /data/www/backups/");
+	  // Identify directories
+	  $srcDir = '/var/www/backups';
+	  $destDir = '/data/www/backups';
+	  echo(exec("sudo chmod 777 " . $srcDir . "/*.*"));
+	  //echo(exec("sudo mv " . $srcDir . "/*.* " . $destDir . "/"));
+	  echo(exec("sudo cp " . $srcDir . "/domotique.sql " . $destDir . "/domotique.sql"));
+	  echo(exec("sudo cp " . $srcDir . "/mysql.sql " . $destDir . "/mysql.sql"));
+	  echo(exec("sudo cp " . $srcDir . "/samba-users.smbback " . $destDir . "/samba-users.smbback"));
+	  echo(exec("sudo rm " . $srcDir . "/*.*"));
+	  echo(exec("sudo rm -r " . $srcDir));
+	  // Modify nginx.conf (if imported from old system)
+	  replace_string_in_file("/usr/local/nginx/conf/nginx.conf", "/var/www", "/data/www");
+	  replace_string_in_file("/var/www/smartcan/www/conf/config.php", "/var/www", "/data/www");
+	  //echo(exec("sudo rm -r /var/www/smartcan/www/conf/config.php"));
+	  replace_string_in_file("/var/www/smartcan/www/conf/config-DEFAULT.php", "/var/www", "/data/www");
+	  echo(exec("sudo rm -r /var/www/smartcan/bin"));
+	  echo(exec("cp -r /var/www /data"));
+	  echo(exec("sudo rm -r /var/www"));
+	  echo(exec("sudo cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf"));
+	} // ENDIF
 	// SQL File present in Extracted files
 	$ScanDir  = scandir($BackupDest);
 	$ndir=0;
 	while (isset($ScanDir[$ndir+2])) {
+	  echo("<br>File in dir: " . $ScanDir[$ndir+2] ."<br>");
 	  if (substr($ScanDir[$ndir+2],-4)==".sql") { 
+	    //echo("<br>Restoring: " . $ScanDir[$ndir+2] ."<br>");
 		echo($msg["BACKUPRESTORE"]["SQLrestored"][$Lang].$ScanDir[$ndir+2]."<br>");
 		importDB($BackupDest."/".$ScanDir[$ndir+2]);
 		unlink($BackupDest."/".$ScanDir[$ndir+2]);
 	  } // END IF
 	  if ($ScanDir[$ndir+2]=="samba-users.smbback") {
-	    shell_exec("sudo pdbedit -i smbpasswd:".$BackupDest."/samba-users.smbback");
+		//echo("<br>Restoring: " . $ScanDir[$ndir+2] ."<br>");
+	    shell_exec($Sudo . "pdbedit -i smbpasswd:".$BackupDest."/samba-users.smbback");
+		shell_exec("sudo pdbedit -i smbpasswd:".$BackupDest."/samba-users.smbback");
 		unlink($BackupDest."/".$ScanDir[$ndir+2]);
 	  } // END IF
 	  $ndir++;
 	} // END WHILE
-	 
+
   } // END IF
   
   // Upload & Restore
   if ($action=="upLoadBackup") {
+	$Sudo = "";
+	if($Linux_Mode != "balena.io") { $Sudo = "sudo "; }
     if (basename($_FILES['PackageFile']['type'])=="x-gzip") {
 	  $BackupDest = $_SERVER['DOCUMENT_ROOT']."/backups/";
       //echo("UPLOAD!-=".basename($_FILES['PackageFile']['name'])."=-<br>");
@@ -300,7 +338,7 @@ function BackupRestore() {
 		//shell_exec("chmod u+s ".$uploadfile." 2>&1");
 		//echo("Moved to $uploadfile!<br>");		
 		
-		if (!shell_exec("sudo /bin/tar zxvf ".$uploadfile." -C /  2>&1")) {
+		if (!shell_exec($Sudo . "/bin/tar zxvf ".$uploadfile." -C /  2>&1")) {
 		  $fileOK="NOK";
 		} else {
 		  // SQL File present in Extracted files
@@ -605,7 +643,7 @@ function importDB($filename) {
       $templine = '';
     } // ENDIF
   } // END FOREACH
-  if ($filename=="mysql.sql") { mysqli_query($DB,"FLUSH PRIVILEGES"); }
-  //echo "Tables imported (".$filename.") successfully"; 
+  mysqli_query($DB,"FLUSH PRIVILEGES");
+  echo "Table imported (".$filename.") successfully"; 
 } // END FUNCTION importtDB
 ?>

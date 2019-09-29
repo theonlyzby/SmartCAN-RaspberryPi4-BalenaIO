@@ -12,6 +12,8 @@ function Variables() {
   global $DB;
   global $msg;
   global $Lang;
+  global $Linux_Mode;
+  $Sudo = ""; if($Linux_Mode != "balena.io") { $Sudo = "sudo "; }
   
   // Includes
   include_once "./lang/admin.module.Variables.php";
@@ -54,7 +56,7 @@ function Variables() {
 	// Linux root Password
 	$LINUXPasswd = html_postget("LINUXPasswd");
 	$LINUXVerif  = html_postget("LINUXVerif");
-	if (($LINUXPasswd!="") && ($LINUXPasswd==$LINUXVerif)) {
+	if (($LINUXPasswd!="") && ($LINUXPasswd==$LINUXVerif) && ($Linux_Mode!="balena.io")) {
 	  exec("echo root:".$LINUXPasswd." | sudo /usr/sbin/chpasswd");
 	  exec("echo pi:".$LINUXPasswd." | sudo /usr/sbin/chpasswd");
 	} // END IF
@@ -66,7 +68,7 @@ function Variables() {
 	if (($SAMBAPasswd!="") && ($SAMBAPasswd==$SAMBAVerif)) {
 	  // $OLDSAMBAPasswd."\n".
 	  //echo(exec("printf \"".$SAMBAPasswd."\n".$SAMBAPasswd."\n\" | sudo -u root bash -c \"/usr/bin/smbpasswd -s\"");
-	  exec("printf \"".$SAMBAPasswd."\n".$SAMBAPasswd."\n\" | sudo /usr/bin/smbpasswd -s root");
+	  exec("printf \"".$SAMBAPasswd."\n".$SAMBAPasswd."\n\" | " . $Sudo . "/usr/bin/smbpasswd -s root");
 	  //<!--#exec cmd="sudo smbpasswd -s -a `cat /full/path/htdocs/user.dat` < /full/path/htdocs/pass.dat" -->
 
 	} // END IF
@@ -329,12 +331,14 @@ position:relative;
   } // End While
   
   // LINUX root Password
-  echo("<input type='hidden' name='LINUXAccount' id ='LINUXAccount' value='root'/>" . CRLF);
-  echo("<tr><td><b>".$msg["VARIABLES"]["ConsoleAccess"][$Lang]."</b>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;</td></tr>" . CRLF);
-  echo("<tr><td>".$msg["VARIABLES"]["RootPasswd"][$Lang]."</td><td><input type='password' name='LINUXPasswd' id='LINUXPasswd' required pattern='(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])\\w{6,}' />" .
+  if($Linux_Mode != "balena.io") {
+    echo("<input type='hidden' name='LINUXAccount' id ='LINUXAccount' value='root'/>" . CRLF);
+    echo("<tr><td><b>".$msg["VARIABLES"]["ConsoleAccess"][$Lang]."</b>&nbsp;&nbsp;&nbsp;</td><td>&nbsp;</td></tr>" . CRLF);
+    echo("<tr><td>".$msg["VARIABLES"]["RootPasswd"][$Lang]."</td><td><input type='password' name='LINUXPasswd' id='LINUXPasswd' required pattern='(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])\\w{6,}' />" .
 		"<div style='display:inline;visibility:hidden;' id=\"LinuxNOK\"><font color=red><b>".$msg["MAIN"]["Incorrect"][$Lang] ."</b></font></div></td></tr>" . CRLF);
-  echo("<tr><td> (".$msg["MAIN"]["Check"][$Lang].")</td><td><input type='password' name='LINUXVerif' id='LINUXVerif' onblur='checkPasswd(\"LINUXAccount\",\"LINUXPasswd\",\"LINUXVerif\",\"LinuxNOK\");'/></td></tr>" . CRLF);
-  echo("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>"); 
+    echo("<tr><td> (".$msg["MAIN"]["Check"][$Lang].")</td><td><input type='password' name='LINUXVerif' id='LINUXVerif' onblur='checkPasswd(\"LINUXAccount\",\"LINUXPasswd\",\"LINUXVerif\",\"LinuxNOK\");'/></td></tr>" . CRLF);
+    echo("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>"); 
+  } // ENDIF
   
   // SAMBA root Password
   echo("<input type='hidden' name='LINUXAccount' id ='OLDSAMBAPasswd' value='1'/>" . CRLF);
@@ -429,6 +433,7 @@ position:relative;
   $retour = mysqli_query($DB,$sql);
   $row = mysqli_fetch_array($retour, MYSQLI_BOTH);
   $Dump1090IP = $row["value"];
+  if (($Linux_Mode == "balena.io") && ($Dump1090IP=="")) { $Dump1090IP = "localhost:90"; }
   echo("<input type='text' name='Dump1090IP' id='Dump1090IP' value='" . $Dump1090IP . "' /></td></tr>");
   
   // Trains
@@ -518,8 +523,13 @@ function submitform(action) {
 
 function TrackFlag() {
   var newPassword = document.getElementById("ROOTPasswd").value;
-  var regularExpression  = /^[a-zA-Z0-9@#$%&*]{6,16}$/;
-  if(!regularExpression.test(newPassword)) {
+  if(newPassword.length<6) {
+	alert("<?php echo($msg["VARIABLES"]["ERRORpasswdTooShort"][$Lang]);?>");
+	document.getElementById("ROOTPasswd").value="";
+	document.getElementById("ROOTPasswd").focus();
+    return false;    
+  }
+  if(newPassword.indexOf("!")>-1) {
 	alert("<?php echo($msg["VARIABLES"]["ERRORpasswdSpecials"][$Lang]);?>");
 	document.getElementById("ROOTPasswd").value="";
 	document.getElementById("ROOTPasswd").focus();
