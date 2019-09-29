@@ -23,6 +23,7 @@ if [ ! -d /data/mysql ]; then
 	chmod 777 /data/www/smartcan/www/conf/config.php
 	mkdir /data/www/backups
 	chmod 777 /data/www/backups
+	cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf
 fi
 
 # Insert Hardware Info towards GPIO
@@ -75,6 +76,7 @@ service smbd start
 service php7.3-fpm start
 
 # Start NGINX
+cp /data/sys-files/nginx.conf /usr/local/nginx/conf/nginx.conf
 /usr/local/nginx/sbin/nginx -c  /usr/local/nginx/conf/nginx.conf
 
 # Start DomoCAN Server
