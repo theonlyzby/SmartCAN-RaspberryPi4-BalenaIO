@@ -27,7 +27,7 @@ http://weather.noaa.gov/pub/data/observations/metar/decoded/EBBR.TXT
     while ( $row = mysqli_fetch_array($retour, MYSQLI_BOTH) ) {
       $id   = $row['id'];
 	  $mean = $row['moyenne'];
-      $sql2 = "INSERT INTO `" . TABLE_CHAUFFAGE_TEMP . "` (`id`, `valeur`, `moyenne`, `update`) VALUES ('" . $id . "', '', '" . $mean . "', '0000-00-00 00:00:00');";
+      $sql2 = "INSERT INTO `" . TABLE_CHAUFFAGE_TEMP . "` (`id`, `valeur`, `moyenne`, `update`) VALUES ('" . $id . "', '0', '" . $mean . "', '0000-00-00 00:00:00');";
       $retour2 = mysqli_query($DB,$sql2);
     } // END WHILE
 	
@@ -114,8 +114,8 @@ http://weather.noaa.gov/pub/data/observations/metar/decoded/EBBR.TXT
 	    $OneWireDir = "/sys/bus/w1/devices/" . $sensor . "/w1_slave";
 	    $data = array();
 	    $data = file($OneWireDir);  
-	    $data = explode('t=',$data[1]);  
-	    $b = round($data[1]/1000, 2); 
+	    $data = explode('t=',$data[1]);
+	    $b = round((int)$data[1]/1000, 2); 
 	  } // END IF
 	  $sql = "UPDATE `" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = now() WHERE `id` = '" . $sensor_id . "';";
 	  mysqli_query($DB,$sql);
