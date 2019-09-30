@@ -107,6 +107,12 @@ RUN cd /opt && git clone --recursive https://github.com/obgm/libcoap.git \
     && sudo make install \
     && rm -R /opt/libcoap
 
+# Compile DomoCAN Services Processes
+RUN gcc /data/www/smartcan/bin/server_udp.c -o /data/www/smartcan/bin/server_udp
+RUN gcc /data/www/smartcan/bin/domocan-bridge.c -o /data/www/smartcan/bin/domocan-bridge
+RUN gcc /data/www/smartcan/bin/domocan-bridge-and-web.c -o /data/www/smartcan/bin/domocan-bridge-and-web
+RUN gcc /data/www/smartcan/bin/domocan-bridge-and-web-FULL.c -o /data/www/smartcan/bin/domocan-bridge-and-web-FULL
+
 # Enable Required Services
 RUN chmod +x /etc/init.d/domocan-monitor
 RUN chmod +x /etc/init.d/domocan-init
