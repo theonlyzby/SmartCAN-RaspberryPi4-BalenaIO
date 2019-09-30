@@ -1,8 +1,10 @@
 gpu_mem=16
 dtparam=spi=on
-dtoverlay=spi0-hw-cs
-dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25
 dtparam=i2c_arm=on
+dtoverlay=vc4-fkms-v3d
+dtoverlay=spi0-hw-cs
+dtoverlay=spi-bcm2835
+dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25
 dtoverlay=i2c-rtc,ds1307
 dtoverlay=w1-gpio
 dtoverlay=w1-gpio-pullup,gpiopin=23
