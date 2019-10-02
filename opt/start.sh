@@ -30,4 +30,5 @@ if [ ! -d /data/mysql ]; then
 	cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf
 fi
 
-/data/sys-files/boot.sh
+chmod a+x /data/sys-files/boot.sh
+( exec "/data/sys-files/boot.sh" )
