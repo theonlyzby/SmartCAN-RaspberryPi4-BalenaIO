@@ -33,3 +33,6 @@ fi
 dos2unix /data/sys-files/boot.sh
 chmod a+x /data/sys-files/boot.sh
 echo "`/bin/sh /data/sys-files/boot.sh`"
+echo "Boot Script Executed"
+
+bash
