@@ -31,4 +31,4 @@ if [ ! -d /data/mysql ]; then
 fi
 
 chmod a+x /data/sys-files/boot.sh
-( exec "/data/sys-files/boot.sh" )
+/bin/bash /data/sys-files/boot.sh
