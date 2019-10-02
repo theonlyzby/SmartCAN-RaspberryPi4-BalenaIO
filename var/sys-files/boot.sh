@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Insert Hardware Info towards GPIO
 #rm /etc/wiringpi/cpuinfo
 mkdir /etc/wiringpi
@@ -75,6 +74,3 @@ if [ -d /data/sys-files/dump1090 ]; then
   ./dump1090 --quiet --no-fix --net-ro-size 500 --net-ro-rate 5 --net-heartbeat 60 --net --net-http-port 90 --lat $LAT --lon $LONG --gain $GAIN
   # --interactive
 fi
-
-# To prevent Docker from exiting
-bash
