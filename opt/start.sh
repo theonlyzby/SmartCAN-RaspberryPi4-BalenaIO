@@ -84,7 +84,7 @@ cp /data/sys-files/nginx.conf /usr/local/nginx/conf/nginx.conf
 /usr/local/nginx/sbin/nginx -c  /usr/local/nginx/conf/nginx.conf
 
 # Start DomoCAN Server
-ip link set can0 up type can bitrate 500000
+ip link set can0 up type can bitrate $CANspeed
 t1=$(ifconfig -a | grep -o can0)
 t2='can0'
 if [ "$t1" = "$t2" ]; then
