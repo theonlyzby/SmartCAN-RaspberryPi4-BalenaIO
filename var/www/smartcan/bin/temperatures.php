@@ -8,11 +8,11 @@ http://weather.noaa.gov/pub/data/observations/metar/decoded/EBBR.TXT
     SCRIPT DE RECUPERATION DES TEMPERATURES VIA 1WIRE, ET MISE EN BDD
   */
 
-  /* DEPENDANCES */
+  /* DEPENDANCIES */
   $base_URI = substr($_SERVER['SCRIPT_FILENAME'],0,strpos(substr($_SERVER['SCRIPT_FILENAME'],1),"/")+1);
   include_once($base_URI.'/www/smartcan/www/conf/config.php');
 
-  /* CONNEXION SQL */
+  /* SQL CONNECTION */
   $DB=mysqli_connect(mysqli_HOST, mysqli_LOGIN, mysqli_PWD);
   mysqli_select_db($DB,mysqli_DB);
 
@@ -65,7 +65,7 @@ http://weather.noaa.gov/pub/data/observations/metar/decoded/EBBR.TXT
 	$sql = "INSERT INTO `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` (`id`, `clef`, `valeur`) VALUES (NULL, 'warm_water', '1');"; 
 	$retour = mysqli_query($DB,$sql);
 	
-	// If NOT on resin, Check Server's IP address into config.php ... and change it if needed
+	// If NOT on Balena, Check Server's IP address into config.php ... and change it if needed
 	if ($base_URI == "/var") {
 	  $ifconfig = shell_exec('/sbin/ifconfig eth0');
 	  preg_match('/addr:([\d\.]+)/', $ifconfig, $match);

@@ -34,12 +34,19 @@ class DomoCAN3_envoiTrame {
 
   /* ENVOI DE LA TRAME SUR L'INTERFACE */
   function envoiTrame() {
+	global $base_URI;
     if (isset($this->trame_ok)) {
       $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
 	  if (ADRESSE_INTERFACE!="localhost") {
 	    $ifconfig = shell_exec('/sbin/ifconfig eth0');
-        preg_match('/addr:([\d\.]+)/', $ifconfig, $match);
+	    if ($base_URI=="/data") {
+	      // Balena
+	      preg_match('/inet ([\d\.]+)/', $ifconfig, $match);
+	    } else {
+	      preg_match('/addr:([\d\.]+)/', $ifconfig, $match);
+	    } // END IF
 	    $server_IP=$match[1];
+		echo("Server IP=".$server_IP.", Addr Int=". ADRESSE_INTERFACE ."<br>");
 	    socket_bind($socket, $server_IP, 1470);
 	  } // END IF
       $longueur = strlen($this->trame_ok);
@@ -52,10 +59,17 @@ class DomoCAN3_envoiTrame {
 
   /* PREPARE UNE TRAME CAN */
   function CAN($entete, $IDCAN = array(), $donnees = array()) {
+	global $base_URI;
 	//echo("CAN Frame: ".$entete.", IDCAN=".implode("-",$IDCAN).", Data=".implode("-",$donnees)."<br>".CRLF);
     $this->trame[0] = $entete; // ENVOI D'UNE TRAME CAN
 	$ifconfig = shell_exec('/sbin/ifconfig eth0');
-    preg_match('/addr:([\d\.]+)/', $ifconfig, $match);
+    //echo("ifconfig = " . $ifconfig . CRLF);
+	if ($base_URI=="/data") {
+	  // Balena
+	  preg_match('/inet ([\d\.]+)/', $ifconfig, $match);
+	} else {
+	  preg_match('/addr:([\d\.]+)/', $ifconfig, $match);
+	} // END IF
 	$server_IP=$match[1];
 	//echo (CRLF."Server IP=".$match[1] . CRLF);
     $this->trame[1] = str_pad(dechex(substr($server_IP,strrpos($server_IP,".")+1)),2,"0", STR_PAD_LEFT); // ID DU PC QUI ENVOI
