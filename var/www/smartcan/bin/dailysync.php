@@ -13,7 +13,7 @@ mysqli_select_db($DB,mysqli_DB);
 // Remove UnDeleted One Time Heating Requests
 $sql = "DELETE FROM `ha_thermostat_timeslots` WHERE `days`='00000001' AND NOT ('04:05:00' BETWEEN `start` AND `stop`);";
 $query = mysqli_query($DB,$sql);
-echo("Thermostat timeslots left over deleted! " . $query.chr(10));
+//echo("Thermostat timeslots left over deleted! " . $query.chr(10));
 
 
 // Get Config Settings
@@ -40,9 +40,7 @@ while ($row = mysqli_fetch_array($query, MYSQLI_BOTH)) {
 			PATHBASE . '/www/images/outputs ' .
 			PATHBASE . '/www/images/plans ' .
 			PATHBASE . '/bin/domocan-server ' .
-			PATHBASE . '/rrdtool ' .
-			'/etc/network ' .
-			'--exclude={"/etc/network/run","/etc/network/if*.d"}');
+			PATHBASE . '/rrdtool ');
 	exec('rm ' . $BackupDest . 'domotique.sql');
 	// Need to move?
 	if ($BackupDest!=$BackupDir) {
@@ -66,7 +64,7 @@ while ($row = mysqli_fetch_array($query, MYSQLI_BOTH)) {
 		// upload a file 
 		//echo("Move =".$BackupDest.$fileName."= to FTP =" . $path.$fileName . "=<br>");
 		if (ftp_put($conn_id, "/".$path."/".$fileName, $BackupDest.$fileName, FTP_BINARY)) { 
-		  echo("<b>FTP ok</b><br>");
+		  //echo("<b>FTP ok</b><br>");
 		  exec('rm ' . $BackupDest . $fileName);
 		} // END IF
 		ftp_close($conn_id);
@@ -87,7 +85,7 @@ while ($row = mysqli_fetch_array($query, MYSQLI_BOTH)) {
 		//echo("Move =".$BackupDest.$fileName."= to SFTP =" . $path.$fileName . "=<br>SFTP: =ssh2.sftp://".$sftp."/".$path.$fileName."<br>");
 		$file = file_get_contents($BackupDest.$fileName);
 		if (file_put_contents("ssh2.sftp://".$sftp."/".$path."/".$fileName, $file)) {
-		  echo("<b>SFTP ok</b><br>");
+		  //echo("<b>SFTP ok</b><br>");
 		  exec('rm ' . $BackupDest . $fileName);
 		} // END IF
 		ssh2_exec($connection, 'logout');
@@ -96,11 +94,21 @@ while ($row = mysqli_fetch_array($query, MYSQLI_BOTH)) {
   } // END IF
   
 // Write New Time into RTC
-shell_exec('sudo hwclock -w');
+//shell_exec('hwclock -w');
 // Send New Time to Horloge Card on CAN Bus
 
 // Erase Logs
-exec('sudo rm -R '.$base_URI."/log/*');
+//exec('rm -R '.$base_URI.'/log/*');
+
+// Sync DomoCAN Clock if needed
+$sql = "SELECT COUNT(*) AS County FROM `ha_subsystem` WHERE Manufacturer LIKE 'DomoCAN%';";
+$query = mysqli_query($DB,$sql);
+$row = mysqli_fetch_array($query, MYSQLI_BOTH);
+$County = $row['County'];
+if ($County!=0) {
+  include_once $base_URI.'/www/smartcan/bin/setDOMOCANclock.php';
+} // END IF
+
 
 // Daily Reboot within 5 minutes, if needed?!?
 // shell_exec('sudo /sbin/shutdown -r +5 Daily Reboot');

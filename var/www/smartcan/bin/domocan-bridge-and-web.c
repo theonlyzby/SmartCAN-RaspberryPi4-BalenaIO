@@ -553,7 +553,7 @@ int main(int argc, char **argv) {
       // Extract Command, PCID, ...
       strncpy(UDP_CMD , bufferHexa   ,  2); UDP_CMD[2]='\0'; strcpy(RX_UDP_Frame, UDP_CMD);
       strncpy(PCID    , bufferHexa+2 ,  2); PCID[2]='\0';    strcat(RX_UDP_Frame, PCID);
-      strncpy(Nbytes  , bufferHexa+4 ,  2); Nbytes[2]='\0';  xtoi(Nbytes, &udp_bytes);     strcat(RX_UDP_Frame, Nbytes); udp_bytes = udp_bytes - 4;
+      strncpy(Nbytes  , bufferHexa+4 ,  2); Nbytes[2]='\0';  xtoi(Nbytes, &udp_bytes);     strcat(RX_UDP_Frame, Nbytes); if (udp_bytes>=5) {udp_bytes = udp_bytes - 4;} else {udp_bytes=6;}
       strncpy(SID     , bufferHexa+6 ,  4); SID[4]='\0';     strcat(RX_UDP_Frame, SID);
       strncpy(EID     , bufferHexa+10,  4); EID[4]='\0';     strcat(RX_UDP_Frame, EID);
       strncpy(Data    , bufferHexa+14, 16); Data[16]='\0';   strcat(RX_UDP_Frame, Data); RX_UDP_Frame[30]='\0';

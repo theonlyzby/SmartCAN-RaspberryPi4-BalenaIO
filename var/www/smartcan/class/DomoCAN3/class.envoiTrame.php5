@@ -6,11 +6,14 @@ class DomoCAN3_envoiTrame {
 
   /* PREPARATION DU CHECKSUM */
   function checksum() {
-    $check="";
-    for ($i = 0; $i <= 14; $i++) {
-      $check = $this->trame[$i] + $check;
+    $check=0;
+    //echo(CRLF."Calculating FCS: ");
+	for ($i = 0; $i <= 14; $i++) {
+	  //echo("Frame[".$i."]=".$this->trame[$i].", ");
+      $check = (int)$this->trame[$i] + $check;
     }
     $this->trame[15] = $check % 256;  
+	//echo("FCS=".$this->trame[15]);
 	
 	/* Tests Frame content
 	echo(CRLF."Frame, with Chesum="); $i=0;
@@ -26,6 +29,7 @@ class DomoCAN3_envoiTrame {
   /* CONVERSION DE LA TRAME AVEC PACK() */
   function conversion() {
     $trame="";
+	$this->trame_ok="";
     for ($i = 0; $i <= 15; $i++) {
       $this->trame_ok .= pack("c", $this->trame[$i]);
       $trame .= $this->trame[$i];
@@ -46,10 +50,11 @@ class DomoCAN3_envoiTrame {
 	      preg_match('/addr:([\d\.]+)/', $ifconfig, $match);
 	    } // END IF
 	    $server_IP=$match[1];
-		echo("Server IP=".$server_IP.", Addr Int=". ADRESSE_INTERFACE ."<br>");
+		//echo("Server IP=".$server_IP.", Addr Int=". ADRESSE_INTERFACE ."<br>");
 	    socket_bind($socket, $server_IP, 1470);
 	  } // END IF
       $longueur = strlen($this->trame_ok);
+	  //echo(CRLF."Frame sent=".$this->trame_ok.",length=".$longueur.CRLF);
       socket_sendto($socket, $this->trame_ok, $longueur, 0, ADRESSE_INTERFACE, 1470);
 	  //socket_sendto($socket, $this->trame_ok, $longueur, 0, "172.27.10.247", 1470);
       socket_close($socket);
@@ -105,11 +110,13 @@ class DomoCAN3_envoiTrame {
 
     $i = '7';
     foreach ($donnees as $valeur) {
+	  //echo("Compose Frame[".($i+7)."] = ".$valeur.CRLF);
       $this->trame[$i] = $valeur;
       $i++;
     }
 
     while ( $i <= 14 ) {
+	  //echo("i= $i, Adding 0x00".CRLF);
       $this->trame[$i] = 0x00;
       $i++;
     }
