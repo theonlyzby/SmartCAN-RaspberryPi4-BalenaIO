@@ -48,6 +48,7 @@ RUN pip3 install -U discord.py
 
 #Install Openresty # openresty-1.13.6.2.tar.gz
 RUN cd /opt
+RUN git clone git://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
 RUN wget https://openresty.org/download/openresty-1.15.8.2.tar.gz
 #RUN wget https://github.com/slact/nginx_http_push_module/archive/v0.99.16.tar.gz https://github.com/slact/nchan/archive/v0.99.16.tar.gz
 RUN wget https://github.com/slact/nchan/archive/v1.1.7.2.tar.gz
@@ -55,14 +56,15 @@ RUN tar xzvf openresty-1.15.8.2.tar.gz
 RUN tar xzvf v1.1.7.2.tar.gz
 #    --add-dynamic-module=../nchan-0.99.16 \ 
 RUN cd ./openresty-1.15.8.2 && ./configure --prefix=/usr/local --conf-path=/usr/local/nginx/conf/nginx.conf \
-    --add-module=../nchan-1.1.7.2 \
+    --add-module=../nchan-1.1.7.2 --add-module=../ngx_http_substitutions_filter_module \
     --with-cc-opt="-I/usr/local/include" --with-ld-opt="-L/usr/local/lib" --with-pcre-jit \
     --without-http_gzip_module --with-http_ssl_module --with-http_secure_link_module && make && sudo make install
 
 RUN rm openresty-1.15.8.2.tar.gz \
       && rm v1.1.7.2.tar.gz \
       && rm -R openresty-1.15.8.2 \
-      && rm -R nchan-1.1.7.2
+      && rm -R nchan-1.1.7.2 \
+      && rm -R ngx_http_substitutions_filter_module
 # Defines our working directory in container
 WORKDIR /
 
