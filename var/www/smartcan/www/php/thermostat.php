@@ -32,7 +32,7 @@
 	//$objResponse->assign("moyenne","innerHTML", round(rand(0,25),1));
 	
 	// HEATER STATUS
-	$heater = "";
+	$heater = ""; $chaudiere = "";
     $retour = mysqli_query($DB,"SELECT * FROM `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` WHERE 1;");
     while ($row = mysqli_fetch_array($retour, MYSQLI_BOTH)) {
       if ($row['clef']=="boiler") {    if ($row['valeur'] == "0" ) { $heater = "OFF";   } 
