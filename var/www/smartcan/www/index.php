@@ -108,23 +108,27 @@ if (((filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) || 
 if (((filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) && ($Access_Level>=1)) || ((!filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) && ($auth_local_user=='Y') && ($Access_Level>=1))
 		 || ((!filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) && ($auth_local_user=='N'))) {
 } else {
-	$sql = "SELECT COUNT(*) AS County FROM `users` WHERE `Alias`='".$_COOKIE['member_login']."' AND `Password`=PASSWORD('".$_COOKIE['member_password']."');";
-	$query = mysqli_query($DB,$sql);
-    $row = mysqli_fetch_array($query, MYSQLI_BOTH);
-	$County = $row['County'];
-	if ($County==0) {
-	  $_GET['page'] = "login";
-	} else {
-	  //echo("Login(".$County.")?".$_COOKIE['member_login']."<br>");
-	  $sql = "SELECT * FROM `users` WHERE `Alias`='".$_COOKIE['member_login']."' AND `Password`=PASSWORD('".$_COOKIE['member_password']."');";
-      $query = mysqli_query($DB,$sql);
+	if (isset($_COOKIE['member_login']) && isset($_COOKIE['member_login'])) {
+	  $sql = "SELECT COUNT(*) AS County FROM `users` WHERE `Alias`='".$_COOKIE['member_login']."' AND `Password`=PASSWORD('".$_COOKIE['member_password']."');";
+	  $query = mysqli_query($DB,$sql);
       $row = mysqli_fetch_array($query, MYSQLI_BOTH);
-	  $Access_Level = $row['Access_Level'];
-	  $User_ID = $row['ID'];
-	  $Lang = $row['Lang'];
-	  $div_sess="YES";
-	  //echo("AL=".$Access_Level);
-	  if ($Access_Level=="") { $_GET['page'] = "login"; }
+	  $County = $row['County'];
+	  if ($County==0) {
+	    $_GET['page'] = "login";
+	  } else {
+	    //echo("Login(".$County.")?".$_COOKIE['member_login']."<br>");
+	    $sql = "SELECT * FROM `users` WHERE `Alias`='".$_COOKIE['member_login']."' AND `Password`=PASSWORD('".$_COOKIE['member_password']."');";
+        $query = mysqli_query($DB,$sql);
+        $row = mysqli_fetch_array($query, MYSQLI_BOTH);
+	    $Access_Level = $row['Access_Level'];
+	    $User_ID = $row['ID'];
+	    $Lang = $row['Lang'];
+	    $div_sess="YES";
+	    //echo("AL=".$Access_Level);
+	    if ($Access_Level=="") { $_GET['page'] = "login"; }
+	  } // END IF
+	} else {
+	  $_GET['page'] = "login";
 	} // END IF	 
 } // END IF
 

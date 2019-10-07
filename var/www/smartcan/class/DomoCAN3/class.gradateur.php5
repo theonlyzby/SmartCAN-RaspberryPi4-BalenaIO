@@ -18,7 +18,7 @@ class DomoCAN3_gradateur extends DomoCAN3_envoiTrame {
     $IDCAN['CIBL'] = hexdec(substr($cible,-2));
     $IDCAN['PARA'] = hexdec(substr($sortie,-2));
     $donnees[0] = $valeur;
-    $donnees[1] = hexdec($progression);
+    $donnees[1] = $progression;
     $this->CAN(0x60,$IDCAN,$donnees);
     $this->checksum();
     $this->conversion();
@@ -40,7 +40,7 @@ class DomoCAN3_gradateur extends DomoCAN3_envoiTrame {
     $IDCAN['CIBL'] = hexdec(substr($cible,-2));
     $IDCAN['PARA'] = hexdec(substr($sortie,-2));
     $donnees[0] = 0x00;
-    $donnees[1] = hexdec($progression);
+    $donnees[1] = $progression;
     $this->CAN(0x60,$IDCAN,$donnees);
     $this->checksum();
     $this->conversion();
@@ -63,7 +63,7 @@ class DomoCAN3_gradateur extends DomoCAN3_envoiTrame {
     $IDCAN['PARA'] = hexdec(substr($sortie,-2));
     $donnees[0] = 0x00;
     $donnees[1] = $intensite;
-    $donnees[2] = hexdec($progression);
+    $donnees[2] = $progression;
     $this->CAN(0x60,$IDCAN,$donnees);
     $this->checksum();
     $this->conversion();

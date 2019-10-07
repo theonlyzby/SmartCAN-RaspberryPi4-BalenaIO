@@ -45,7 +45,8 @@
 	  include_once '../class/'.$grad_FullName.'/class.gradateur.php5';
 	  $grad_FullName = $grad_FullName . "_gradateur";
       $gradateur = new $grad_FullName();
-	  $gradateur->allumer($row['carte'], $row['sortie'], $row['delai'], $row['valeur_souhaitee']);
+	  $gradateur->allumer($row['carte'], $row['sortie'], $row['delai'], hexdec($row['valeur_souhaitee']));
+	  //$gradateur->inverser($row['carte'], $row['sortie'] , $row['delai'], $row['valeur_souhaitee']);
       sleep(1);
     }
     mysqli_close($DB);
@@ -66,7 +67,7 @@
 	  include_once '../class/'.$grad_FullName.'/class.gradateur.php5';
 	  $grad_FullName = $grad_FullName . "_gradateur";
       $gradateur = new $grad_FullName();
-	  $gradateur->eteindre($row['carte'], $row['sortie'], $row['delai'], $row['valeur_souhaitee']);
+	  $gradateur->eteindre($row['carte'], $row['sortie'], $row['delai']);
       sleep(1);
     }
     mysqli_close($DB);
