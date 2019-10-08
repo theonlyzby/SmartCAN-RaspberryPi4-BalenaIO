@@ -158,9 +158,13 @@ if (((filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) && 
     if (isset($_POST['usedtheme'])) {
 	  $reqTheme = $_POST['usedtheme']; $_GET['theme'] = $_POST['usedtheme'];
 	} else {
-      $_GET['theme'] = 'responsive';
-    }
-  }
+	  if (substr($_SERVER['REMOTE_ADDR'], 0, strrpos($_SERVER['REMOTE_ADDR'], ".")) == substr($_SERVER['SERVER_ADDR'], 0, strrpos($_SERVER['SERVER_ADDR'], "."))) {
+	    $_GET['theme'] = 'tablet';
+	  } else {
+        $_GET['theme'] = 'responsive';
+	  } // END IF
+    } // END IF
+  } // END IF
   
 
   /* OUVRE LE XTEMPLATE */
