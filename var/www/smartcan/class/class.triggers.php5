@@ -1,6 +1,30 @@
 <?php
 
+// Includes $msg["heater"]["AlertTitle"]["en"]
+
+
 class trigger {
+
+  // Send Notification on Progressive Web App application (User screen)
+  function PWA_notify($OEM, $Title, $Body, $Body2) {
+	global $DB;
+	global $base_URI;
+	$sql = "SELECT * FROM `users_notification`;";
+	$return = mysqli_query($DB, $sql);
+	$base_curl = "curl -X POST -H \"Authorization: key=AAAAGAKq-Y4:APA91bH9gphJptTwGpiQ32cHpldseJMsRWCV6jdyAB-ESHX4Vxs3XEmABzwz7Im7QD0SBCVvQeJRxgdbmsm3KGZwRaLnA8vzBIkNz3wbFO4L55x2KTFTdO6O03UwIv1RowqKVY36dTuO\" " .
+					"-H \"Content-Type: application/json\" -d '{\"data\": {\"notification\": {";
+	while ($row = mysqli_fetch_array($return, MYSQLI_BOTH)) {
+	  include_once($base_URI . '/www/smartcan/class/' . $OEM . '/lang.triggers.php');
+	  
+	  // Send ALERT Notification
+	  $curl = $base_curl . "\"title\": \"" . $msg["DomoCAN3Trigger"][$Title][$row["Lang"]] . "\", " .
+					"\"body\": \"" . $msg["DomoCAN3Trigger"][$Body][$row["Lang"]] . $Body2 . "\", " .
+					"\"icon\": \"/smartcan/www/images/icons/icon-192x192.png\" } }," .
+					"\"to\": \"".$row["Token"]."\" }' https://fcm.googleapis.com/fcm/send";
+	  echo("curl: " . $curl . CRLF);
+	  exec($curl);
+	} // END WHILE
+  } // END FUNCTION
 
   /* feedback & Trigger from Output Element*/
   function OUTtrigger($Manufacturer, $Subsystem, $Element, $Value) {

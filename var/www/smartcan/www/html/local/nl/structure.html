@@ -275,6 +275,70 @@ if (navigator.onLine) {
   
 </div>
 
+<div id="token"></div>
+    <div id="msg"></div>
+    <div id="notis"></div>
+    <div id="err"></div>
+    <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase.js"></script>
+    <script>
+        MsgElem = document.getElementById("msg");
+        TokenElem = document.getElementById("token");
+        NotisElem = document.getElementById("notis");
+        ErrElem = document.getElementById("err");
+
+		function sendTokenToServer(currentToken) {
+			console.log("Sending Token");
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", './getToken.php', true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.send(JSON.stringify({
+				Token: currentToken
+			}));
+		}
+		
+        // Initialize Firebase
+        // TODO: Replace with your project's customized code snippet
+		var firebaseConfig = {
+			apiKey: "AIzaSyDZgiyflnAxIXsWgREIZYNn3FOKLXbUOOw",
+			authDomain: "smartcan-58e59.firebaseapp.com",
+			databaseURL: "https://smartcan-58e59.firebaseio.com",
+			projectId: "smartcan-58e59",
+			storageBucket: "smartcan-58e59.appspot.com",
+			messagingSenderId: "103123974542",
+			appId: "1:103123974542:web:ff7e898a3ec7c3feff4cdf"
+		};
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+        messaging
+            .requestPermission()
+            .then(function () {
+                //MsgElem.innerHTML = "Notification permission granted." 
+                console.log("Notification permission granted.");
+                
+                // get the token in the form of promise
+                return messaging.getToken()
+            })
+            .then(function(token) {
+			  if (token==="") {
+			    location.reload();
+			  } else {
+                //TokenElem.innerHTML = "token is : " + token
+				sendTokenToServer(token)
+			  }
+            })
+            .catch(function (err) {
+                ErrElem.innerHTML =  ErrElem.innerHTML + "; " + err
+                console.log("Unable to get permission to notify.", err);
+            });
+        messaging.onMessage(function(payload) {
+            console.log("Message received. ", payload);
+            //NotisElem.innerHTML = NotisElem.innerHTML + JSON.stringify(payload) 
+        });
+		
+
+    </script>
+
+
   </body>
 </html>
 <!-- END: main -->

@@ -2,6 +2,27 @@
 
 class DomoCAN3_gradateur extends DomoCAN3_envoiTrame {
 
+  /*
+
+    TEST REACHABILITY CAN GATEWAY
+
+    $cible => NUMERO DE CARTE GRADATEUR
+    $sortie => NUMERO DE LA SORTIE DE CETTE CARTE
+
+  */
+  function test_reachability($OEM, $var1, $var2, $Notif_Title, $Notif_Body) {
+	global $DB;
+	$Trig = new trigger();
+	$status=0;
+	$pingresult = exec("/bin/ping -c2 -w2 " . ADRESSE_INTERFACE, $outcome, $status);  
+    if ($status!=0) {
+	  echo "The CAN GATEWAY(".ADRESSE_INTERFACE."), is UNREACHABLE!\n";
+	  $Trig->PWA_notify($OEM, $Notif_Title, $Notif_Body, " (CAN GATEWAY ".ADRESSE_INTERFACE.")");
+	} // END IF
+	return $status;
+	//return 0;
+  } // END FUNCTION
+
 
   /*
 

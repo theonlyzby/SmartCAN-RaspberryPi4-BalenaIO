@@ -159,7 +159,7 @@ if (((filter_var($client_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) && 
 	  $reqTheme = $_POST['usedtheme']; $_GET['theme'] = $_POST['usedtheme'];
 	} else {
 	  if (substr($_SERVER['REMOTE_ADDR'], 0, strrpos($_SERVER['REMOTE_ADDR'], ".")) == substr($_SERVER['SERVER_ADDR'], 0, strrpos($_SERVER['SERVER_ADDR'], "."))) {
-	    $_GET['theme'] = 'tablet';
+		$_GET['theme'] = 'tablet';
 	  } else {
         $_GET['theme'] = 'responsive';
 	  } // END IF

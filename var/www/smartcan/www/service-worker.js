@@ -68,3 +68,4 @@ self.addEventListener('fetch', function(event) {
   // or simply don't call event.respondWith, which
   // will result in default browser behaviour
 });
+

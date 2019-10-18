@@ -723,6 +723,18 @@ INSERT INTO `meteo_fete` VALUES (1,'St Maria, Télémaque','08:44:00','17:04:00'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `users_notification`
+--
+
+CREATE TABLE `users_notification` (
+  `ID` int(10) UNSIGNED NOT NULL,
+  `Alias` varchar(20) NOT NULL,
+  `Lang` varchar(3) NOT NULL,
+  `User_Agent` varchar(125) NOT NULL,
+  `Token` varchar(170) NOT NULL
+) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
+
+--
 -- Table structure for table `users`
 --
 

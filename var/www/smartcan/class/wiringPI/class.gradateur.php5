@@ -4,6 +4,14 @@ class wiringPI_gradateur extends wiringPI_envoiTrame {
 
 
   /*
+    TEST REACHABILITY OUTPUT
+  */
+  function test_reachability($OEM, $var1, $var2, $Notif_Title, $Notif_Body) {
+	// wiringPI outs are always reachable ;-)
+	return 0;
+  } // END FUNCTION
+
+  /*
     ALLUMER UNE SORTIE
     $progression => TEMPS ENTRE L'ETAT FERME ET L'ETAT OUVERT (0 - 2550 ms)
 
