@@ -17,7 +17,7 @@ class DomoCAN3_gradateur extends DomoCAN3_envoiTrame {
 	$pingresult = exec("/bin/ping -c2 -w2 " . ADRESSE_INTERFACE, $outcome, $status);  
     if ($status!=0) {
 	  echo "The CAN GATEWAY(".ADRESSE_INTERFACE."), is UNREACHABLE!\n";
-	  $Trig->PWA_notify($OEM, $Notif_Title, $Notif_Body, " (CAN GATEWAY ".ADRESSE_INTERFACE.")");
+	  $Trig->PWA_notify($OEM, $Notif_Title, $Notif_Body, " (CAN GATEWAY: ".ADRESSE_INTERFACE.")");
 	} // END IF
 	return $status;
 	//return 0;
