@@ -59,6 +59,37 @@ echo("<p>Big Thank you to <a href src='http://www.abcelectronique.com/bigonoff/f
 echo("<p><h1 style=\"text-align: center;\">Release Notes</h1></p>");
 
 
+// Version 2019.11
+
+echo("<p><h2>Version: 2019.11</h2></p>" . CRLF);
+
+echo("<p><h3>Added/Modified:</h3></p>" . CRLF);
+
+echo("<p>- 64 bit images for Raspberyy Pi 4 and 3 <br>- Updated versions of MariaDB, PHP7.3 ... <br>- PWA Notifications <br>- Added key controls on thermostat, support on AndroidTV ...  </p>" . CRLF);
+
+echo("<p>&nbsp;</p>" . CRLF);
+
+
+// Version 2018
+
+echo("<p><h2>Version: 2018.10</h2></p>" . CRLF);
+
+echo("<p><h3>Added/Modified:</h3></p>" . CRLF);
+
+echo("<p>- Install on Balena.io + newer versions of MariaDb, PHP7.2 ... <br>- Progressive WebApp with Install<br>- Various Bugfixes </p>" . CRLF);
+
+echo("<p>&nbsp;</p>" . CRLF);
+
+// Version 1.0
+
+echo("<p><h2>Version: 1.0</h2></p>" . CRLF);
+
+echo("<p><h3>Added/Modified:</h3></p>" . CRLF);
+
+echo("<p>- Refreshed PHP7, MySQL5.6, kernel 4.4, ... </p>" . CRLF);
+
+echo("<p>&nbsp;</p>" . CRLF);
+
 // Version 0.9.7 Beta
 
 echo("<p><h2>Version: 0.9.7 Beta</h2></p>" . CRLF);

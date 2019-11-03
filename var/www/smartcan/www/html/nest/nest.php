@@ -24,7 +24,7 @@ a img {		border: none;
 a {		color: #FFF;
   }
 
- /* Fontes utilisées */  
+ /* Fontes utilisÃ©es */  
 @font-face {
     font-family: "N_E_B";
     src: url(N_E_B.TTF) format("truetype");
@@ -54,7 +54,7 @@ a {		color: #FFF;
  -webkit-border-radius: 350px;
  
   
- /* Permet de mettre un dégradé sur le cercle en fonction de tous les navigateurs */
+ /* Permet de mettre un dÃ©gradÃ© sur le cercle en fonction de tous les navigateurs */
  background: #eaeaea; /* Old browsers */
  background: -webkit-radial-gradient(top left, ellipse cover, #eaeaea 0%,#eaeaea 11%,#0e0e0e 61%); /* Chrome10+,Safari5.1+ */
  background: -moz-radial-gradient(top left, ellipse cover,  #eaeaea 0%, #eaeaea 11%, #0e0e0e 61%); /* FF3.6+ */
@@ -64,7 +64,7 @@ a {		color: #FFF;
  background: radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#0e0e0e 61%); /* W3C */
  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaeaea', endColorstr='#0e0e0e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
  
- /* Permet de ne pas pouvoir être sélectionné */
+ /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
  -webkit-touch-callout: none;
  -webkit-user-select: none;
  -khtml-user-select: none;
@@ -73,7 +73,7 @@ a {		color: #FFF;
  user-select: none;
 }
 
-/* Fond chromé, j'utilise ici une image d'un disque brossé */
+/* Fond chromÃ©, j'utilise ici une image d'un disque brossÃ© */
 .fond {
   position:relative;
   background-image: url(fond.png);
@@ -82,9 +82,9 @@ a {		color: #FFF;
   height: 400px;
   /*left: 40%;
   /*top:20%;
-  /* Permet de replir la totalité de la zone */
+  /* Permet de replir la totalitÃ© de la zone */
   background-size:cover;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -93,7 +93,7 @@ a {		color: #FFF;
   user-select: none;
 }
 
-/* La petite feuille nest, affichée en cas d'économie d'énergie, ici lorsqu'on baisse la t° ou le ventilo */
+/* La petite feuille nest, affichÃ©e en cas d'Ã©conomie d'Ã©nergie, ici lorsqu'on baisse la tÂ° ou le ventilo */
 .feuille {
   position:relative;
   top:-220px;
@@ -103,9 +103,9 @@ a {		color: #FFF;
   width: 32px;
   height: 32px;
   z-index:auto;
-  /* non affichée par défaut */
+  /* non affichÃ©e par dÃ©faut */
   opacity:0;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -116,7 +116,7 @@ a {		color: #FFF;
   text-align: center;
 }
 
-/* La petite flamme, affichée en cas de demande de chauffage immédiate, disparait en cliquant desssus */
+/* La petite flamme, affichÃ©e en cas de demande de chauffage immÃ©diate, disparait en cliquant desssus */
 .fire {
   position:relative;
   top:-205px;
@@ -126,9 +126,9 @@ a {		color: #FFF;
   width: 32px;
   height: 32px;
   z-index:auto;
-  /* non affichée par défaut */
+  /* non affichÃ©e par dÃ©faut */
   opacity:0;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -138,7 +138,7 @@ a {		color: #FFF;
   text-align: center;
 }
 
-/* La valeur NEST affichée, soit Température, soit % ventilo soit demande chauffage immédiat */
+/* La valeur NEST affichÃ©e, soit TempÃ©rature, soit % ventilo soit demande chauffage immÃ©diat */
 .nestValue {
 position:relative;
   top:-100;
@@ -146,7 +146,7 @@ position:relative;
   font-family: "MANDATOR", Verdana, Tahoma;
   font-size:60px;
   color:#ffffff;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -156,7 +156,7 @@ position:relative;
   text-align: center;
 }
 
-/* En cas de demande immédiate de chauffage, durée de demande ici 2h  */
+/* En cas de demande immÃ©diate de chauffage, durÃ©e de demande ici 2h  */
 .hour {
   position:relative;
   top:-160;
@@ -164,7 +164,7 @@ position:relative;
   font-family: "MANDATOR", Verdana, Tahoma;
   font-size:20px;
   color:#ffffff;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -176,7 +176,7 @@ position:relative;
   z-index:500;
 }
 
-/* En cas de demande immédiate de chauffage, durée de demande ici 4h  */
+/* En cas de demande immÃ©diate de chauffage, durÃ©e de demande ici 4h  */
 .hour2 {
   position:relative;
   top:-206;
@@ -184,7 +184,7 @@ position:relative;
   font-family: "MANDATOR", Verdana, Tahoma;
   font-size:20px;
   color:#ffffff;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -196,14 +196,14 @@ position:relative;
   z-index:500;
 }
 
-* En cas de demande immédiate de chauffage, durée de demande ici 2h  */
+* En cas de demande immÃ©diate de chauffage, durÃ©e de demande ici 2h  */
 .consigne {
   position:relative;
  
   font-family: "MANDATOR", Verdana, Tahoma;
   font-size:10px;
   color:#ffffff;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -215,7 +215,7 @@ position:relative;
   z-index:500;
 }
 
-/* Mode Nest: Température, Fan, ou demande chauffage */
+/* Mode Nest: TempÃ©rature, Fan, ou demande chauffage */
 .nestMode {
 position:relative;
   top:-30;
@@ -223,7 +223,7 @@ position:relative;
   font-family: "MANDATOR", Verdana, Tahoma;
   font-size:20px;
   color:#ffffff;
-  /* Permet de ne pas pouvoir être sélectionné */
+  /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -259,7 +259,7 @@ position:relative;
  -webkit-border-radius: 220px;
 
   
- /* Dégradé circulaire */
+ /* DÃ©gradÃ© circulaire */
  background: #3e61a8; /* Old browsers */
  background: -webkit-radial-gradient(top left, ellipse cover, #fff9f9 10%,#0338ac 60%); /* Chrome10+,Safari5.1+ */
  background: -moz-radial-gradient(top left, ellipse cover,  #eaeaea 0%, #fff9f9 10%, #0338ac 60%); /* FF3.6+ */
@@ -269,7 +269,7 @@ position:relative;
  background: radial-gradient(top left, ellipse cover,  #eaeaea 0%,#fff9f9 10%,#0338ac 60%); /* W3C */
  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaeaea', endColorstr='#0338ac',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
- /* Permet de ne pas pouvoir être sélectionné */
+ /* Permet de ne pas pouvoir Ãªtre sÃ©lectionnÃ© */
  -webkit-touch-callout: none;
  -webkit-user-select: none;
  -khtml-user-select: none;
@@ -279,7 +279,7 @@ position:relative;
 }
 
 /*----------------------------
-	Barres de progression colorées
+	Barres de progression colorÃ©es
 -----------------------------*/
 
 
@@ -354,31 +354,32 @@ $(document).ready(function(){
 		// Creation des barres
 		mytop =(-Math.sin(deg/rad2deg)*95+100);
 		myleft = Math.cos((180 - deg)/rad2deg)*95+100;
-		// On ajoute ici 82 barres en indiquant à chacune l'angle de rotation
+		// On ajoute ici 82 barres en indiquant Ã  chacune l'angle de rotation
 	$('<div id=barre' + j + ' name=barre' + j + ' class="colorBar" style="-webkit-transform: rotate(' + deg + 'deg) scale(1.25, 0.5); -moz-transform: rotate(' + deg + 'deg) scale(1.25, 0.5); -ms-transform: rotate(' + deg + 'deg) scale(1.25, 0.5);transform: rotate('+ deg +'deg) scale(1.25, 0.5);top: '+ mytop + '; left: ' + myleft+ ' ; color:red" >')
 		.appendTo(bars);	
 		j++;
 	}
 	var colorBars = bars.find('.colorBar');
 	var numBars = 0, lastNum = -1;
-	// ici on les désactive toutes en utilisant la css active sur les éléments de 0 à 0. donc rien.
+	// ici on les dÃ©sactive toutes en utilisant la css active sur les Ã©lÃ©ments de 0 Ã  0. donc rien.
     colorBars.removeClass('active').slice(0, 0).addClass('active');
 })
 </script>
 
 <script type="text/javascript">  
+
 $(document).ready(function(){    
 
 $("body").on("touchmove", false);
-// Fonction principale, ici un tableau de couleurs dégradées
+// Fonction principale, ici un tableau de couleurs dÃ©gradÃ©es
 var grad = [
 		'243594','2c358f','373487','44337e','513174',
 		'5c306c','6b2f62','792e58','892d4d','9e2b3d',
 		'b4292e','c9271f','e0250e'];
 
-// Dernier angle calculé
+// Dernier angle calculÃ©
 var lastAngle=0;
-// Savoir si le bouton de souris est pressé.
+// Savoir si le bouton de souris est pressÃ©.
 var mouseDown="";
 // temperature confort
 var temperatureConfort=window.parent.consigneconfort.innerHTML;
@@ -390,13 +391,13 @@ var temperatureNest=temperatureConfort;
 // temperature actuelle sondes
 var temperatureActuelle=window.parent.moyenne.innerHTML;
 
-// ratio utilisé pour synchroniser les barres et le mode température
+// ratio utilisÃ© pour synchroniser les barres et le mode tempÃ©rature
 var ratioTemperature=3;
-// couleur de fond pour la temperature (par défaut)
+// couleur de fond pour la temperature (par dÃ©faut)
 var couleurFondTemperature="#243594";
 // couleur de fond pour autoaway
 var couleurFondAutoAway="#000000";
-// mode par défaut ici TEMP
+// mode par dÃ©faut ici TEMP
 if (window.parent.divabsence.innerHTML!="1") {
   var currentMode="";
   //console.log("PRESENT! "+window.parent.divabsence.innerHTML);
@@ -413,7 +414,10 @@ var readyToSensor="NOK";
 var modeForce="";
 var modeH="";
 var wd=new Array(7); <?php for ($i = 0; $i <= 7; $i++) { echo("wd[$i+1]='".substr($day_list[$Lang][$i],0,3)." '; "); }?>
- 
+
+var TimeOUT_KEYUP = null;
+var newValue = 0;
+
 refreshTemp();
 
 if (currentMode!="HEAT NOW") {
@@ -490,7 +494,7 @@ if (currentMode!="HEAT NOW") {
 
 
 
-// Une petite tache de fond lancée toutes les 7 secondes pour raffraichir les données de puis le serveur
+// Une petite tache de fond lancÃ©e toutes les 5 secondes pour rafraichir les donnÃ©es depuis le serveur
 var refreshLoop = setInterval(function () {
     refreshTemp();
 }, 5000);
@@ -619,9 +623,11 @@ function refreshTemp()
 	    } else { var TexteNext = ""; }
       } // END IF
       $( "#nestValue" ).html(temperatureActuelle + TexteNext);
+	  $("#hour").css("opacity","0");
+	  $("#hour2").css("opacity","0");
 	  setCouleurTemperature();
 	} // END IF
-	
+	//currentMode="";
 	
 	
 }
@@ -688,7 +694,7 @@ function setCouleurTemperature()
   } // ENDIF
 }
 
-// Définition de la fonction pour gestion de temperature
+// DÃ©finition de la fonction pour gestion de temperature
 function manageTemperature(e) {
     var offset = $('#full-circle').offset();
     var width=$('#full-circle').width();
@@ -704,7 +710,7 @@ function manageTemperature(e) {
 	//console.log("width="+ width + " height="+height + " center_x=" + center_x + " center_y=" + center_y + " offsetLeft=" + offset.left + " this.offsetTop="+ offset.top);
 	
 	 setCouleurTemperature();
-     // Arrondi au Dixième
+     // Arrondi au DixiÃ¨me
      temperatureNest=Math.round(temperatureNest*2)/2;
 
      var radians = Math.atan2(mouse_x - center_x, mouse_y - center_y);
@@ -732,7 +738,7 @@ function manageTemperature(e) {
 };
 
 
-// Fonction mettant à jour les barresn en passant la valeur et le ratio
+// Fonction mettant Ã  jour les barres en passant la valeur et le ratio
 function majBarres(value,ratio)
 {
 var bars = $('#bars');
@@ -743,28 +749,12 @@ colorBars.removeClass('active').slice(0, Math.round(value*ratio)).addClass('acti
 
 function getTempConfort()
 {
-// Pour rendre dynamique la recherche appliquer le même raisonnement que pour la fonction getTempActuelle
-//DATAS Ici on récupère un valeur aléatoire pour la démo, mais sinon en décommentant en  dessous et positionnant votre 
-	// url la température sera récupérée en AJAX
-	//temperatureConfort=window.parent.temp_nest;
 	temperatureConfort= window.parent.consigneconfort.innerHTML;
 	//console.log("Temp Confort="+temperatureConfort);
-	//var requestTempConfort=$.ajax({
-	//	  url: "ObjectAction?action=getTempConfort&objectName=Chauffage&objectClass=Manager",
-	//	  dataType: "html",
-	//	  async: true
-	//	});
-	//requestTempConfort.done(function(msg) {
-	//	temperatureConfort=msg;
-	//	});
 }
 
 function getTempActuelle()
-{
-    //DATAS Ici on récupère un valeur aléatoire pour la démo, mais sinon en décommentant en  dessous et positionnant votre 
-	// url la température sera récupérée en AJAX
-	//temperatureActuelle=Math.floor((Math.random()*20)+1);
-	
+{	
 	temperatureActuelle = window.parent.moyenne.innerHTML; //window.parent.temp_house;
 	//console.log("NEST Moyenne="+temperatureActuelle);
 }
@@ -812,7 +802,7 @@ function getTempMini()
 	//console.log("Temp Min="+temperatureMini);
 }
 
-// Fonction mettant à jour le degradé sur cercle central en passant la couleur de fond à obtenir
+// Fonction mettant Ã  jour le degradÃ© sur cercle central en passant la couleur de fond Ã  obtenir
 function majCouleurCercle(couleurFond)
 {
 	//console.log("maj couleur cercle " + couleurFond);
@@ -826,7 +816,7 @@ function majCouleurCercle(couleurFond)
 }
 
 $('#full-circle').mousedown(function(e){
-  // Lorsqu'on appuie sur le bouton de gauche, on autorise le thermostat à bouger
+  // Lorsqu'on appuie sur le bouton de gauche, on autorise le thermostat Ã  bouger
   mouseDown="ok";
   
 });
@@ -836,7 +826,7 @@ $('*').mousedown(function(e){
 	});
 
 $('*').mouseup(function(e){
-  // Lorsqu'on relache le bouton de gauche, on n'autorise plus le thermostat à bouger
+  // Lorsqu'on relache le bouton de gauche, on n'autorise plus le thermostat Ã  bouger
   if (mouseDown!="") {
     //alert("Relache, mouseDown="+mouseDown);
     mouseDown="";
@@ -873,29 +863,29 @@ function release() {
 //  } // END IF
 //});
 
-// Lorsque l'on clique sur l'icone 2h, on sauvegarde et on fait tout disparaitre
+// Lorsque l'on clique sur l'icone 1h, on sauvegarde et on fait tout disparaitre
 $('#hour').click(function(){ 
   $("#hour").css("opacity","0");
   $("#hour2").css("opacity","0");
   $("#fire").css("opacity","1");
   heatNow=1;
-   $( "#nestValue" ).html("1h");
-   window.parent.xajax_HeatNow(1);
-   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
+  $( "#nestValue" ).html("1h");
+  window.parent.xajax_HeatNow(1);
+  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
 });
 
-// Lorsque l'on clique sur l'icone 4h, on sauvegarde et on fait tout disparaitre
+// Lorsque l'on clique sur l'icone 2h, on sauvegarde et on fait tout disparaitre
 $('#hour2').click(function(){ 
   $("#hour").css("opacity","0");
   $("#hour2").css("opacity","0");
   $("#fire").css("opacity","1");
-  heatNow=2
+  heatNow=2;
    $( "#nestValue" ).html("2h");
    window.parent.xajax_HeatNow(2);
    TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
 });
 
-// Lorsque l'on clique sur l'icone fire, le mode de demande immédiate de chauffage disparait
+// Lorsque l'on clique sur l'icone fire, le mode de demande immÃ©diate de chauffage disparait
 $('#fire').click(function(){ 
 $("#fire").css("opacity","0");
 heatNow="";
@@ -911,11 +901,97 @@ $('#feuille').click(function(){
   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
 });
 
-// Lorsque l'on clique sur le texte nest, on switch d'un mode à l'autre
+//
+// Detects keypresses and launch actions
+$(parent).bind('keydown', '$', function(evt){
+  //
+  // Left or Right => Change mode
+  if ((evt.keyCode==37) || (evt.keyCode==39)) {
+    //alert("Left or Right:" + event.keyCode);
+	ChangeMode("keys");
+	mouseDown="ok";
+	clearTimeout(TimeOUT_KEYUP);
+	TimeOUT_KEYUP=setTimeout(function(){mouseDown="";},1000);
+  } // END IF
+  
+  //
+  // Up or Down on Temp Confort or Temp Mini to chang configured temperatures 
+  if (((evt.keyCode==38) || (evt.keyCode==40)) && ((currentMode=="TEMP CONFORT") || (currentMode="TEMP MINI"))) { //
+    DeltaTemp=+1;
+	if (evt.keyCode==38) { newValue = parseFloat(temperatureNest) + 0.5; } else { newValue = parseFloat(temperatureNest) - 0.5; }
+	temperatureNest = newValue;
+	//alert("Up(38) or Down(40):" + event.keyCode + ", Mode= " + currentMode + ", DeltaTemp=" + DeltaTemp);
+	if (currentMode=="TEMP CONFORT") {
+	  poseConsigne(ratioTemperature*temperatureNest,temperatureNest);
+	  mouseDown="ok";
+	  clearTimeout(TimeOUT_KEYUP);
+	  TimeOUT_KEYUP=setTimeout(function(){mouseDown="";release();},2000); // alert("Set Confort Temp");
+	  //setTempConfort();
+	  refreshTemp();
+	}
+	if (currentMode=="TEMP MINI") {
+	  poseConsigne(ratioTemperature*temperatureNest,temperatureNest);
+	  mouseDown="ok";
+	  clearTimeout(TimeOUT_KEYUP);
+	  TimeOUT_KEYUP=setTimeout(function(){mouseDown="";release();},2000); // alert("Set Confort Temp");
+	  //setTempMini();
+	  refreshTemp();
+	}
+    //manageTemperature(touch);
+  } // END IF
+  
+  //
+  // Enter when in "AWAY" => reset to normal working mode
+  if ((event.keyCode==13) && (document.getElementById("feuille").style.opacity==1)) {
+    window.parent.xajax_autoBack();
+	TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
+  } 
+  
+  //
+  // Start HEAT Now 1 or 2 Hour(s)
+  if ((document.getElementById("hour").style.opacity==1)) {
+    // 1 Hour (ENTER or Down)
+	if ((event.keyCode==13) || (evt.keyCode==40)) {
+	  $("#hour").css("opacity","0");
+	  $("#hour2").css("opacity","0");
+	  $("#fire").css("opacity","1");
+	  heatNow=1;
+	  $( "#nestValue" ).html("1h");
+	  window.parent.xajax_HeatNow(1);
+	  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
+	} // END IF
+	// 2 Hours (Up)
+	if (evt.keyCode==38) {
+	  $("#hour").css("opacity","0");
+	  $("#hour2").css("opacity","0");
+	  $("#fire").css("opacity","1");
+	  heatNow=2;
+	  $( "#nestValue" ).html("2h");
+	  window.parent.xajax_HeatNow(2);
+	  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
+	} // END IF
+
+  } // END IF 
+  
+  //
+  // Start config when 
+  
+});
+
+// Lorsque l'on clique sur le texte nest, on switch d'un mode Ã  l'autre
 $('#nestTitle').click(function(){ 
+  ChangeMode("mouse");
+});
 
   //console.log("clic" + " currentMode=" + currentMode);
-  
+
+// Manage Mode Change on screen 
+function ChangeMode(mode) {
+  // Reduces modes when using keys to scroll modes
+  if (mode=="keys") {
+    //alert(currentMode);
+    if ((currentMode=="") || (currentMode=="TEMP MINI")) { currentMode="&nbsp;&nbsp;"; }
+  }
   if ( currentMode == "HEAT NOW" )
    
    {
@@ -1020,7 +1096,7 @@ $('#nestTitle').click(function(){
   $("#nestMode" ).slideUp();
   $( "#nestMode" ).html(currentMode)
   $("#nestMode" ).slideDown();
-});
+}
 
 function AUTO_Away() {
   //alert("TimeOUT!");
@@ -1028,9 +1104,9 @@ function AUTO_Away() {
   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
 }
 
-// En fonction du mode, on fait varier les couleurs et les barres différement
+// En fonction du mode, on fait varier les couleurs et les barres diffÃ©rement
 $('#full-circle').mousemove(function(e){ 
-  // Si on est autorisé à bouger	
+  // Si on est autorisÃ© Ã  bouger	
   if ( mouseDown == "ok" )
    {
     if ( currentMode == "TEMP CONFORT" ||  currentMode == "TEMP MINI" )
@@ -1043,13 +1119,13 @@ $('#full-circle').mousemove(function(e){
 
 
 $('#full-circle').bind( "touchstart", function(e){
-  // Lorsqu'on touche l'écran, on autorise le thermostat à bouger
+  // Lorsqu'on touche l'Ã©cran, on autorise le thermostat Ã  bouger
   mouseDown="ok";
   //alert("touchstart");
 });
 
 $('*').bind( "touchend", function(e){
-  // Lorsqu'on relache l'écran, on n'autorise plus le thermostat à bouger
+  // Lorsqu'on relache l'Ã©cran, on n'autorise plus le thermostat Ã  bouger
   mouseDown="";
   release();
   //alert("touchend");
@@ -1058,7 +1134,7 @@ $('*').bind( "touchend", function(e){
 $('#full-circle').bind( "touchmove", function(e){
 	readyToSensor="NOK";
     var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-  // Si on est autorisé à bouger   
+  // Si on est autorisÃ© Ã  bouger   
   if ( mouseDown == "ok" )
    {
     if ( currentMode == "TEMP MINI" || currentMode == "TEMP CONFORT" )
@@ -1095,9 +1171,4 @@ $('#full-circle').bind( "touchmove", function(e){
 
   <div id="consigne" name="consigne" >
 
-<script type="text/javascript">
-//<![CDATA[
-if (typeof _gstat != "undefined") _gstat.audience('','pagesperso-orange.fr');
-//]]>
-</script>
 </body></html>
