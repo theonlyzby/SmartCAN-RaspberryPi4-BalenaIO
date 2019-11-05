@@ -13,10 +13,10 @@ FROM balenalib/raspberrypi3-debian:buster
 RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y 
 RUN apt-get install -yq debconf-utils \
        mariadb-client mariadb-common libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev wget cron sudo nano \
-       python3 python3-pip wpasupplicant sudo make gcc libpcre3 autoconf automake libtool net-tools php7.3-gmp \
+       python3 python3-pip wpasupplicant sudo make gcc libpcre3 autoconf automake libtool net-tools php7.3-gmp php7.3-dev \
        php7.3 php7.3-curl php7.3-gd php7.3-fpm php7.3-cli php7.3-opcache php7.3-mysqli php7.3-xml php7.3-mbstring \
        ntp samba samba-common-bin systemd git-core git cmake libusb-1.0-0-dev build-essential pkg-config \
-       libffi-dev libnacl-dev python3-dev curl
+       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev
 
 # Install wiringpi (64 bits Modified Version)
 RUN cd /opt && git clone git://github.com/Vicinzu/wiringPi-arm64 \
