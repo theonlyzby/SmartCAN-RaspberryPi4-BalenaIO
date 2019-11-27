@@ -25,6 +25,7 @@ if [ ! -d /data/mysql ]; then
 	chmod +x /data/www/smartcan/bin/rx-DOMOCAN3.php
 	chmod 777 /data/www/smartcan/www/conf/*
 	chmod 777 /data/www/smartcan/www/conf/config.php
+	chmod 777 /data/www/smartcan/www/test.txt
 	mkdir /data/www/backups
 	chmod 777 /data/www/backups
 	cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf
