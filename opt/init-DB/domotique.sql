@@ -727,7 +727,6 @@ UNLOCK TABLES;
 --
 
 CREATE TABLE `users_notification` (
-  `ID` int(10) UNSIGNED NOT NULL,
   `Alias` varchar(20) NOT NULL,
   `Lang` varchar(3) NOT NULL,
   `User_Agent` varchar(125) NOT NULL,
