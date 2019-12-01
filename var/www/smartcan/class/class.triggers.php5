@@ -21,7 +21,7 @@ class trigger {
 					"\"body\": \"" . $msg["PWAnotification"][$Body][$row["Lang"]] . $Body2 . "\", " .
 					"\"icon\": \"/smartcan/www/images/icons/icon-192x192.png\" } }," .
 					"\"to\": \"".$row["Token"]."\" }' https://fcm.googleapis.com/fcm/send";
-	  echo("curl: " . $curl . CRLF);
+	  //echo("curl: " . $curl . CRLF);
 	  exec($curl);
 	} // END WHILE
   } // END FUNCTION
