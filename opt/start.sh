@@ -103,7 +103,7 @@ service cron start
 # Start Dump1090 Server (Airplane Radar)
 if [ -d /data/sys-files/dump1090 ]; then
   cd /srv/dump1090
-  ./dump1090 --no-fix --net --quiet --net-http-port 90 --lat $LAT --lon $LONG --gain $GAIN
+  ./dump1090 --no-fix --net --quiet --net-http-port 90 --lat ${LAT} --lon ${LONG} --gain ${GAIN}
   # --interactive --net --net-ro-size 500 --net-ro-rate 5 --net-heartbeat 60 
 fi
 
