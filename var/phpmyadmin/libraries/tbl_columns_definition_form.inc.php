@@ -263,6 +263,12 @@ for ($columnNumber = 0; $columnNumber < $num_fields; $columnNumber++) {
             break;
         default:
             $columnMeta['DefaultType'] = 'USER_DEFINED';
+
+            if ('text' === substr($columnMeta['Type'], -4)) {
+                $textDefault = substr($columnMeta['Default'], 1, -1);
+                $columnMeta['Default'] = stripcslashes($textDefault !== false ? $textDefault : $columnMeta['Default']);
+            }
+
             $columnMeta['DefaultValue'] = $columnMeta['Default'];
             break;
         }
@@ -422,8 +428,8 @@ $html = Template::get('columns_definitions/column_definitions_form')->render([
     'max_rows' => intval($GLOBALS['cfg']['MaxRows']),
     'char_editing' => isset($GLOBALS['cfg']['CharEditing']) ? $GLOBALS['cfg']['CharEditing'] : null,
     'attribute_types' => $GLOBALS['dbi']->types->getAttributes(),
-    'privs_available' => (isset($GLOBALS['col_priv']) ? $GLOBALS['col_priv'] : false
-        && isset($GLOBALS['is_reload_priv']) ? $GLOBALS['is_reload_priv'] : false
+    'privs_available' => ((isset($GLOBALS['col_priv']) ? $GLOBALS['col_priv'] : false)
+        && (isset($GLOBALS['is_reload_priv']) ? $GLOBALS['is_reload_priv'] : false)
     ),
     'max_length' => $GLOBALS['dbi']->getVersion() >= 50503 ? 1024 : 255,
     'have_partitioning' => Partition::havePartitioning(),

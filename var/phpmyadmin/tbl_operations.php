@@ -214,6 +214,18 @@ if (isset($_POST['submitoptions'])) {
             $GLOBALS['db'], $GLOBALS['table'], $_POST['tbl_collation']
         );
     }
+
+    if (isset($_POST['tbl_collation']) && empty($_POST['tbl_collation'])) {
+        $response = Response::getInstance();
+        if ($response->isAjax()) {
+            $response->setRequestStatus(false);
+            $response->addJSON(
+                'message',
+                Message::error(__('No collation provided.'))
+            );
+            exit;
+        }
+    }
 }
 /**
  * Reordering the table has been requested by the user
@@ -469,12 +481,8 @@ if (Partition::havePartitioning()) {
 unset($partition_names);
 
 // Referential integrity check
-// The Referential integrity check was intended for the non-InnoDB
-// tables for which the relations are defined in pmadb
-// so I assume that if the current table is InnoDB, I don't display
-// this choice (InnoDB maintains integrity by itself)
 
-if ($cfgRelation['relwork'] && ! $pma_table->isEngine("INNODB")) {
+if ($cfgRelation['relwork']) {
     $GLOBALS['dbi']->selectDb($GLOBALS['db']);
     $foreign = $relation->getForeigners($GLOBALS['db'], $GLOBALS['table'], '', 'internal');
 

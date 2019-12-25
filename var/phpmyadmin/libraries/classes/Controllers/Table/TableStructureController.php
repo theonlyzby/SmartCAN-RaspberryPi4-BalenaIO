@@ -371,6 +371,12 @@ class TableStructureController extends TableController
             $this->db, $this->table, null, true
         );
 
+        foreach ($fields as $key => $row) {
+            if ('text' === substr($row['Type'], -4)) {
+                $fields[$key]['Default'] = stripcslashes(substr($row['Default'], 1, -1));
+            }
+        }
+
         //display table structure
         $this->response->addHTML(
             $this->displayStructure(
@@ -398,6 +404,9 @@ class TableStructureController extends TableController
         $column_names = array_keys($columns);
         $changes = array();
 
+        // @see https://mariadb.com/kb/en/library/changes-improvements-in-mariadb-102/#information-schema
+        $usesLiteralNull = $this->dbi->isMariaDB() && $this->dbi->getVersion() >= 100200;
+        $defaultNullValue = $usesLiteralNull ? 'NULL' : null;
         // move columns from first to last
         for ($i = 0, $l = count($_POST['move_columns']); $i < $l; $i++) {
             $column = $_POST['move_columns'][$i];
@@ -416,11 +425,12 @@ class TableStructureController extends TableController
                 unset($data['Extra']);
             }
             $current_timestamp = ($data['Type'] == 'timestamp'
-                    || $data['Type'] == 'datetime')
+                    || $data['Type'] == 'datetime' || $data['DATA_TYPE'] == 'int')
                 && ($data['Default'] == 'CURRENT_TIMESTAMP'
                     || $data['Default'] == 'current_timestamp()');
 
-            if ($data['Null'] === 'YES' && $data['Default'] === null) {
+            // @see https://mariadb.com/kb/en/library/information-schema-columns-table/#examples
+            if ($data['Null'] === 'YES' && in_array($data['Default'], [$defaultNullValue, null])) {
                 $default_type = 'NULL';
             } elseif ($current_timestamp) {
                 $default_type = 'CURRENT_TIMESTAMP';
@@ -448,7 +458,7 @@ class TableStructureController extends TableController
                 $extracted_columnspec['spec_in_brackets'],
                 $extracted_columnspec['attribute'],
                 isset($data['Collation']) ? $data['Collation'] : '',
-                $data['Null'] === 'YES' ? 'NULL' : 'NOT NULL',
+                $data['Null'] === 'YES' ? 'YES' : 'NO',
                 $default_type,
                 $current_timestamp ? '' : $data['Default'],
                 isset($data['Extra']) && $data['Extra'] !== '' ? $data['Extra']
@@ -518,7 +528,7 @@ class TableStructureController extends TableController
         $fields_meta = array();
         for ($i = 0; $i < $selected_cnt; $i++) {
             $value = $this->dbi->getColumns(
-                $this->db, $this->table, $selected[$i], true
+                $this->db, $this->table, $this->dbi->escapeString($selected[$i]), true
             );
             if (count($value) == 0) {
                 $message = Message::error(
@@ -883,7 +893,7 @@ class TableStructureController extends TableController
                 $_POST['field_length'][$i],
                 $_POST['field_attribute'][$i],
                 Util::getValueByKey($_POST, "field_collation.${i}", ''),
-                Util::getValueByKey($_POST, "field_null.${i}", 'NOT NULL'),
+                Util::getValueByKey($_POST, "field_null.${i}", 'NO'),
                 $_POST['field_default_type'][$i],
                 $_POST['field_default_value'][$i],
                 Util::getValueByKey($_POST, "field_extra.${i}", false),
@@ -1030,7 +1040,7 @@ class TableStructureController extends TableController
                             $_POST['field_length_orig'][$i],
                             $_POST['field_attribute_orig'][$i],
                             Util::getValueByKey($_POST, "field_collation_orig.${i}", ''),
-                            Util::getValueByKey($_POST, "field_null_orig.${i}", 'NOT NULL'),
+                            Util::getValueByKey($_POST, "field_null_orig.${i}", 'NO'),
                             $_POST['field_default_type_orig'][$i],
                             $_POST['field_default_value_orig'][$i],
                             Util::getValueByKey($_POST, "field_extra_orig.${i}", false),
