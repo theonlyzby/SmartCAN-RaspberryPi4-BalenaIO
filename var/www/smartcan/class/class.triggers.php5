@@ -10,6 +10,11 @@ class trigger {
 	global $DB;
 	global $base_URI;
 	include_once($base_URI . '/www/smartcan/class/lang.triggers.php');
+	// Output in text file (debug)
+	$file = './PWAnotifications.txt';
+	// Open the file to get existing content
+	$current = file_get_contents($file);
+	
 	// Parse DB to find active users, their lang & Firebase Token
 	$sql = "SELECT * FROM `users_notification`;";
 	$return = mysqli_query($DB, $sql);
@@ -22,8 +27,23 @@ class trigger {
 					"\"icon\": \"/smartcan/www/images/icons/icon-192x192.png\" } }," .
 					"\"to\": \"".$row["Token"]."\" }' https://fcm.googleapis.com/fcm/send";
 	  //echo("curl: " . $curl . CRLF);
-	  exec($curl);
+	  $current .= "curl: " . $curl . "\n";
+	  $feedback = exec($curl);
+	  $current .= "Feedback=" . $feedback . "\n";
+	  $dec = json_decode($feedback);
+	  if (!is_numeric(substr($dec->{"results"}[0]->{"message_id"},0,1))) {
+		//echo("NOK");
+		$current .= "BAD Feedback, will remove from DB \n";
+		$sql2 = "DELETE FROM `users_notification` WHERE `Alias`='".$row["Alias"]."' AND `Lang`='".$row["Lang"]."' AND `User_Agent`='".$row["User_Agent"]."' AND `Token`='".$row["Token"]."';";
+		$current .= "SQL=" . $sql2 . "\n";
+		mysqli_query($DB, $sql2);
+	  } // END IF
+	  
 	} // END WHILE
+	
+	// Write the contents back to the file
+	$current .=  "\n";
+	file_put_contents($file, $current);
   } // END FUNCTION
 
   /* feedback & Trigger from Output Element*/

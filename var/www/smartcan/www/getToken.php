@@ -48,7 +48,7 @@ $query = mysqli_query($DB,$sql);
 $row = mysqli_fetch_array($query, MYSQLI_BOTH);
 if ($row['County']!="0") {
   // Update user_notification table
-  $sql = "UPDATE `users_notification` SET `Lang` = '".$Lang."', `Token` = '".$request["Token"]."' WHERE `Alias` = '".$User."' AND `User_Agent` = '".$_SERVER['HTTP_USER_AGENT']."';";
+  $sql = "UPDATE `users_notification` SET `Lang` = '".$Lang."', `User_Agent` = '".$_SERVER['HTTP_USER_AGENT']."' WHERE `Alias` = '".$User."' AND `Token` = '".$request["Token"]."';";
   //$current .= $sql . "\n";
   $query = mysqli_query($DB,$sql);
 } else {

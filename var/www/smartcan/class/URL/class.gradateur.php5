@@ -21,8 +21,10 @@ class URL_gradateur extends URL_envoiTrame {
 	$ip      = parse_url($linkURL, PHP_URL_HOST);
 	$pingresult = exec("/bin/ping -c2 -w2 $ip", $outcome, $status);  
     if ($status!=0) {
-	  echo "The IP address, $ip, is UNREACHABLE!\n";
+	  //echo "The IP address, $ip, is UNREACHABLE!\n";
 	  $Trig->PWA_notify($OEM, $Notif_Title, $Notif_Body, " (URL IP: ".$ip.")");
+	} else {
+	  $Trig->PWA_notify($OEM, "SmartCAN-INFO", "Module-Reachable", " (URL IP: ".$ip.")");
 	} // END IF
 	return $status;
   } // END FUNCTION
