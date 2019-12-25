@@ -78,7 +78,8 @@ service mysql start
 service smbd start
 
 # Start PHP
-service php7.3-fpm start
+#service php7.3-fpm start
+/etc/init.d/php7.3-fpm start
 
 # Start NGINX
 cp /data/sys-files/nginx.conf /usr/local/nginx/conf/nginx.conf
