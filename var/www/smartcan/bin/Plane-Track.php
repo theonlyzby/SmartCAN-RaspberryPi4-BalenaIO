@@ -49,7 +49,7 @@ function detect_plane($server, $debug=0) {
       $alt        = round(floatval($value->altitude)/3.2808);
       $vert       = round(($value->vert_rate)*0.0051,1);
 	  $speed      = round(($value->speed)*1,852,1);
-      $dist       = round(distance($lat,$long,50.8503804,4.4185094),1);
+      $dist       = round(distance($lat,$long,getenv("LAT"),getenv("LONG")),1);
   
       if ((($debug!=0) && ($flight!="")) && (($valid!=0) || (($valid==0) && ($alt<=3000) && ($validTrack==0)))) {
 		if ($valid==0) echo("<a target='_blank' style='text-decoration: none' href='https://fr.flightaware.com/photos/aircraft/".$flight."'><font color=blue><b>"); 
