@@ -18,6 +18,12 @@ include_once($base_URI . '/www/smartcan/class/lang.triggers.php');
 $DB=mysqli_connect(mysqli_HOST, mysqli_LOGIN, mysqli_PWD);
 mysqli_select_db($DB,mysqli_DB);
 
+// Determines how much Tokens are available
+$sql = "SELECT COUNT(*) AS County FROM `users_notification` WHERE 1;";
+$query = mysqli_query($DB,$sql);
+$row = mysqli_fetch_array($query, MYSQLI_BOTH);
+echo("Number of Tokens = " . $row["County"] . "<br>");
+
 // Fetch DB to find user and Language
 $sql = "SELECT * FROM `users_notification` WHERE 1;";
 $query = mysqli_query($DB,$sql);
