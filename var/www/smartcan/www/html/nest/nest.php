@@ -171,7 +171,6 @@ position:relative;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-
   opacity:0;
   z-index:500;
 }
@@ -191,7 +190,6 @@ position:relative;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-
   opacity:0;
   z-index:500;
 }
@@ -869,9 +867,12 @@ $('#hour').click(function(){
   $("#hour2").css("opacity","0");
   $("#fire").css("opacity","1");
   heatNow=1;
+  mouseDown="";
+  currentMode="TEMP MINI";
+  ChangeMode("mouse");
   $( "#nestValue" ).html("1h");
   window.parent.xajax_HeatNow(1);
-  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
+  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},100);
 });
 
 // Lorsque l'on clique sur l'icone 2h, on sauvegarde et on fait tout disparaitre
@@ -880,9 +881,12 @@ $('#hour2').click(function(){
   $("#hour2").css("opacity","0");
   $("#fire").css("opacity","1");
   heatNow=2;
+  mouseDown="";
+  currentMode="TEMP MINI";
+  ChangeMode("mouse");
    $( "#nestValue" ).html("2h");
    window.parent.xajax_HeatNow(2);
-   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},500);
+   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},100);
 });
 
 // Lorsque l'on clique sur l'icone fire, le mode de demande immédiate de chauffage disparait
