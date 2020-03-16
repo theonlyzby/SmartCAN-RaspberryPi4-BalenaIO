@@ -83,10 +83,10 @@
   $row         = mysqli_fetch_array($retour, MYSQLI_BOTH);
   $chaudiere   = $row[0];
   /* ETAT DU BOILER */
+  $retour      = mysqli_query($DB,"SELECT `valeur` FROM `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` WHERE `clef` = 'boiler';");
+  $row         = mysqli_fetch_array($retour, MYSQLI_BOTH);
+  $etat_boiler = $row[0];
   if ($circulateureauchaude!=0) {
-    $retour      = mysqli_query($DB,"SELECT `valeur` FROM `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` WHERE `clef` = 'boiler';");
-    $row         = mysqli_fetch_array($retour, MYSQLI_BOTH);
-    $etat_boiler = $row[0];
     $retour      = mysqli_query($DB,"SELECT `valeur` FROM `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` WHERE `clef` = 'warm_water';");
     $row         = mysqli_fetch_array($retour, MYSQLI_BOTH);
     $warm_water  = $row[0];
