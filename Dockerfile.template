@@ -91,12 +91,11 @@ RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
     && ldconfig \
     && make \
     && make install \
-    && ldconfig
-
-#    && cd /srv \
-#    && git clone git://github.com/antirez/dump1090.git \
-#    && cd dump1090 \
-#    && make \
+    && ldconfig \
+    && cd /srv \
+    && git clone git://github.com/antirez/dump1090.git \
+    && cd dump1090 \
+    && make 
 #    && cd .. \
 #    && printf 'blacklist dvb_usb_rtl28xxu\nblacklist rtl2832\nblacklist rtl2830\n' > nortl.conf \
 #    && cp ./nortl.conf /etc/modprobe.d/no-rtl.conf
