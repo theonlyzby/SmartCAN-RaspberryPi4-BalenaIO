@@ -96,11 +96,11 @@ RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
     && git clone git://github.com/antirez/dump1090.git \
     && cd dump1090 \
     && make 
-#    && cd .. \
-#    && printf 'blacklist dvb_usb_rtl28xxu\nblacklist rtl2832\nblacklist rtl2830\n' > nortl.conf \
-#    && cp ./nortl.conf /etc/modprobe.d/no-rtl.conf
+    && cd .. \
+    && printf 'blacklist dvb_usb_rtl28xxu\nblacklist rtl2832\nblacklist rtl2830\n' > nortl.conf \
+    && cp ./nortl.conf /etc/modprobe.d/no-rtl.conf
 
-RUN cp /srv/nortl.conf /etc/modprobe.d/no-rtl.conf
+#RUN cp /srv/nortl.conf /etc/modprobe.d/no-rtl.conf
 
 # Install ZigBee Libcaot library (Ikea Tradfri and Philips Hue)
 RUN cd /opt && git clone --recursive https://github.com/obgm/libcoap.git \
