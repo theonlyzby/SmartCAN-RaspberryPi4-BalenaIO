@@ -69,7 +69,6 @@
  
   // Update Temperature Minimum depuis Nest
    function updateConsigneMini($newTemp) {
-    GLOBAL CHANGE_MIN;
     if (CHANGE_MIN==1) {
       $objResponse = new xajaxResponse();
       $DB=mysqli_connect(mysqli_HOST, mysqli_LOGIN, mysqli_PWD);
