@@ -16,7 +16,7 @@ RUN apt-get install -yq debconf-utils \
        python3 python3-pip wpasupplicant sudo make gcc libpcre3 autoconf automake libtool net-tools php7.3-gmp php7.3-dev \
        php7.3 php7.3-curl php7.3-gd php7.3-fpm php7.3-cli php7.3-opcache php7.3-mysqli php7.3-xml php7.3-mbstring \
        ntp samba samba-common-bin systemd git-core git cmake libusb-1.0-0-dev build-essential pkg-config \
-       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev librtlsdr-dev librtlsdr0
+       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev librtlsdr0 librtlsdr-dev
 
 # Install wiringpi (64 bits Modified Version)
 RUN cd /opt && git clone git://github.com/Vicinzu/wiringPi-arm64 \
@@ -82,7 +82,8 @@ RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
 # Install dump1090
 # OLD server:  && git clone git://github.com/MalcolmRobb/dump1090.git \
 # Previous server: && git clone git://github.com/steel101/dump1090.git \
- RUN cd /srv \
+# Last try NOK: && git clone git://github.com/antirez/dump1090.git \
+RUN cd /srv \
     && git clone git://git.osmocom.org/rtl-sdr.git \
     && cd rtl-sdr \
     && mkdir build \
@@ -94,14 +95,14 @@ RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
     && ldconfig
 RUN cp /srv/librtlsdr.pc /usr/lib/arm-linux-gnueabihf/pkgconfig/librtlsdr.pc
 RUN cd /srv \
-    && git clone git://github.com/antirez/dump1090.git \
+    && git clone git://github.com/MalcolmRobb/dump1090.git \
     && cd dump1090 \
     && make \
     && cd .. \
     && printf 'blacklist dvb_usb_rtl28xxu\nblacklist rtl2832\nblacklist rtl2830\n' > nortl.conf \
     && cp ./nortl.conf /etc/modprobe.d/no-rtl.conf
 
-#RUN cp /srv/nortl.conf /etc/modprobe.d/no-rtl.conf
+# RUN cp /srv/nortl.conf /etc/modprobe.d/no-rtl.conf
 
 # Install ZigBee Libcaot library (Ikea Tradfri and Philips Hue)
 RUN cd /opt && git clone --recursive https://github.com/obgm/libcoap.git \
