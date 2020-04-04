@@ -69,14 +69,17 @@
  
   // Update Temperature Minimum depuis Nest
    function updateConsigneMini($newTemp) {
-    $objResponse = new xajaxResponse();
-    $DB=mysqli_connect(mysqli_HOST, mysqli_LOGIN, mysqli_PWD);
-    mysqli_select_db($DB,mysqli_DB);
-    mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF . "` SET `valeur` = '" . $newTemp . "' WHERE `clef` = 'tempminimum';");
-    mysqli_close($DB);
-    $objResponse->assign("consigneminimum","innerHTML", $newTemp);
+    GLOBAL CHANGE_MIN;
+    if (CHANGE_MIN==1) {
+      $objResponse = new xajaxResponse();
+      $DB=mysqli_connect(mysqli_HOST, mysqli_LOGIN, mysqli_PWD);
+      mysqli_select_db($DB,mysqli_DB);
+      mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF . "` SET `valeur` = '" . $newTemp . "' WHERE `clef` = 'tempminimum';");
+      mysqli_close($DB);
+      $objResponse->assign("consigneminimum","innerHTML", $newTemp);
 	//sleep(10);
-	exec('php /data/www/smartcan/bin/chauffage.php');
+      exec('php /data/www/smartcan/bin/chauffage.php');
+    } // END IF
     return $objResponse;    
   }
   
