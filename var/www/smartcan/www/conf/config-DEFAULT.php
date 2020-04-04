@@ -26,6 +26,7 @@
   define('DEFAUT_LOCALISATION', 'RDC');
   define('URIPUSH', 'http://127.0.0.1/smartcan/envoi');
   define('URIRECV', '/smartcan/reception');
+  define('CHANGE_MIN', '1');
   
   /* SQLI */
   define('mysqli_HOST', '127.0.0.1');
