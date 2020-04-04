@@ -82,16 +82,17 @@ RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
 # Install dump1090
 # OLD server:  && git clone git://github.com/MalcolmRobb/dump1090.git \
 # Previous server: && git clone git://github.com/steel101/dump1090.git \
-# RUN cd /srv \
-#    && git clone git://git.osmocom.org/rtl-sdr.git \
-#    && cd rtl-sdr \
-#    && mkdir build \
-#    && cd build \
-#    && cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON \
-#    && ldconfig \
-#    && make \
-#    && make install \
-#    && ldconfig \
+ RUN cd /srv \
+    && git clone git://git.osmocom.org/rtl-sdr.git \
+    && cd rtl-sdr \
+    && mkdir build \
+    && cd build \
+    && cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON \
+    && ldconfig \
+    && make \
+    && make install \
+    && ldconfig
+
 #    && cd /srv \
 #    && git clone git://github.com/antirez/dump1090.git \
 #    && cd dump1090 \
