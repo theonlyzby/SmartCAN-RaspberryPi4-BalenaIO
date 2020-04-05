@@ -16,7 +16,7 @@ RUN apt-get install -yq debconf-utils \
        python3 python3-pip wpasupplicant sudo make gcc libpcre3 autoconf automake libtool net-tools php7.3-gmp php7.3-dev \
        php7.3 php7.3-curl php7.3-gd php7.3-fpm php7.3-cli php7.3-opcache php7.3-mysqli php7.3-xml php7.3-mbstring \
        ntp samba samba-common-bin systemd git-core git cmake libusb-1.0-0-dev build-essential pkg-config \
-       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev librtlsdr0 librtlsdr-dev
+       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev librtlsdr-dev
 
 # Install wiringpi (64 bits Modified Version)
 RUN cd /opt && git clone git://github.com/Vicinzu/wiringPi-arm64 \
@@ -95,7 +95,7 @@ RUN cd /srv \
     && ldconfig
 RUN cp /srv/librtlsdr.pc /usr/lib/arm-linux-gnueabihf/pkgconfig/librtlsdr.pc
 RUN cd /srv \
-    && git clone git://github.com/MalcolmRobb/dump1090.git \
+    && git clone git://github.com/antirez/dump1090.git \
     && cd dump1090 \
     && make \
     && cd .. \
