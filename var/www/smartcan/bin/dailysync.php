@@ -32,7 +32,7 @@ while ($row = mysqli_fetch_array($query, MYSQLI_BOTH)) {
   // Backup
   if (($daily_backup=="Y") || (($weekly_backup=="Y") && (date("N")=="5")) || (($monthly_backup=="Y") && (date("d")=="01"))) {
     $BackupDest = $base_URI."/www/backups/";
-    exec('mysqldump --user=' . MYSQL_LOGIN . ' --password=' . MYSQL_PWD . " " . MYSQL_DB . ' > ' . $BackupDest . 'domotique.sql');
+    exec('mysqldump --user=' . mysqli_LOGIN . ' --password=' . mysqli_PWD . " " . mysqli_DB . ' > ' . $BackupDest . 'domotique.sql');
 	$fileName = date("Ymd-His-").'FULLsmartCAN-BACKUP.tar.gz';
 	exec('tar -czvf '. $BackupDest.$fileName . " " .
 			$BackupDest . 'domotique.sql ' .
