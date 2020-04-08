@@ -191,14 +191,25 @@
     $_XTemplate->assign('PROCHAINECHAUFFE', $heure);
 	$_XTemplate->assign('DD'  , "8"); // Today;-)
   } else {
-    $DayBit   = date("N",mktime(1, 1, 1, date("m"), date("d")+1, date("y")));
-    $Tomorrow = str_pad(str_pad("1",$DayBit,"_",STR_PAD_LEFT),8,"_");
-    $sql      = "SELECT start FROM `" . TABLE_HEATING_TIMSESLOTS . "` WHERE (`function`='HEATER'  AND (`days` LIKE '" . $Tomorrow . "') AND `active`='Y') ORDER BY `start`;";
-    $retour   = mysqli_query($DB,$sql);
-	$row=mysqli_fetch_array($retour, MYSQLI_BOTH);
-	if (substr($row[0],0,1)=="0") { $heure    = substr($row[0],1,1) . substr($row[0],3,2); } else {$heure    = substr($row[0],0,2) . substr($row[0],3,2);}
+    $Incr = 1; $Count = 0; $heure = ""; 
+    while ($Incr<=6 && $Count==0) {
+      $DayBit   = date("N",mktime(1, 1, 1, date("m"), date("d") + $Incr, date("y"))); $Incr++;
+      $Tomorrow = str_pad(str_pad("1",$DayBit,"_",STR_PAD_LEFT),8,"_");
+      $sql_init = " FROM `" . TABLE_HEATING_TIMSESLOTS . "` WHERE (`function`='HEATER'  AND (`days` LIKE '" . $Tomorrow . "') AND `ac$
+      $sql = " SELECT COUNT(*)" . $sql_init;
+      $retour   = mysqli_query($DB,$sql);
+      $row=mysqli_fetch_array($retour, MYSQLI_BOTH);
+      $Count = $row[0];
+      //echo("--" .$sql."--".$row[0]."--");
+      if ($Count>=1) {
+        $sql = " SELECT `start`" . $sql_init;
+        $retour   = mysqli_query($DB,$sql);
+        $row=mysqli_fetch_array($retour, MYSQLI_BOTH);
+        if (substr($row[0],0,1)=="0") { $heure    = substr($row[0],1,1) . substr($row[0],3,2); } else {$heure    = substr($row[0],0,2$
+      } // END IF
+    } // END WHILE
     $_XTemplate->assign('PROCHAINECHAUFFE', $heure);
-	$_XTemplate->assign('DD'  , $DayBit);
+    $_XTemplate->assign('DD'  , $DayBit);
   } // ENDIF
   
   // Hour & Day
