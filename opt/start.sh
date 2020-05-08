@@ -31,6 +31,9 @@ if [ ! -d /data/mysql ]; then
 	cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf
 fi
 
+# Generate Env Variable => Container Start Date & Time
+export CONTAINER_START=$( stat /proc/1/cmdline | grep Modify | awk '{print $2 " " $3}' )
+
 # Insert Hardware Info towards GPIO
 #rm /etc/wiringpi/cpuinfo
 mkdir /etc/wiringpi
