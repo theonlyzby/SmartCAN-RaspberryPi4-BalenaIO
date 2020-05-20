@@ -31,6 +31,13 @@ if [ ! -d /data/mysql ]; then
 	cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf
 fi
 
+# Set time to correct Timezone
+# Default to UTC if no TIMEZONE env variable is set
+echo "Setting time zone to ${TIMEZONE=UTC}"
+# This only works on Debian-based images
+echo "${TIMEZONE}" > /etc/timezone
+dpkg-reconfigure tzdata
+
 # Generate Env Variable => Container Start Date & Time
 export CONTAINER_START=$( stat /proc/1/cmdline | grep Modify | awk '{print $2 " " $3}' )
 
