@@ -27,6 +27,7 @@ DROP TABLE IF EXISTS `chauffage_clef`;
 CREATE TABLE `chauffage_clef` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID AUTO',
   `clef` varchar(20) NOT NULL COMMENT 'CLEF',
+  `ZoneNber` int(1) NOT NULL DEFAULT 0,
   `valeur` varchar(50) NOT NULL COMMENT 'VALEUR',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COMMENT='CLEF / VALEUR pour le module chauffage';
@@ -38,7 +39,7 @@ CREATE TABLE `chauffage_clef` (
 
 LOCK TABLES `chauffage_clef` WRITE;
 /*!40000 ALTER TABLE `chauffage_clef` DISABLE KEYS */;
-INSERT INTO `chauffage_clef` VALUES (1,'temperature','20'),(2,'absence','1'),(3,'tempminimum','10'),(4,'circulateureauchaude','1'),(5,'HeaterOUT',''),(6,'BoilerOUT','');
+INSERT INTO `chauffage_clef` VALUES (1,'temperature',0,'20'),(2,'absence',0,'1'),(3,'tempminimum',0,'10'),(4,'circulateureauchaude',0,'1'),(5,'HeaterOUT',0,''),(6,'BoilerOUT',0,'');
 /*!40000 ALTER TABLE `chauffage_clef` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -259,7 +260,7 @@ CREATE TABLE `ha_element` (
   `card_id` varchar(16) NOT NULL,
   `element_type` varchar(16) NOT NULL,
   `element_reference` varchar(16) NOT NULL COMMENT 'Number in DomoCAN',
-  `element_name` varchar(32) NOT NULL,
+  `element_name` varchar(40) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -298,7 +299,7 @@ CREATE TABLE `ha_element_types` (
 
 LOCK TABLES `ha_element_types` WRITE;
 /*!40000 ALTER TABLE `ha_element_types` DISABLE KEYS */;
-INSERT INTO `ha_element_types` VALUES (1,'DomoCAN3','0x50','OUT','0x11','Dimmer'),(2,'DomoCAN3','0x50','FUNCTION','0x16','Memory, on GRAD16 card, allow resetting pre-programmed scenarios'),(3,'DomoCAN3','0x51','OUT','0x12','ON/OFF'),(4,'DomoCAN3','0x60','IN','0x22','Input ON/OFF Switch');
+INSERT INTO `ha_element_types` VALUES (1,'DomoCAN3','0x50','OUT','0x11','Dimmer'),(2,'DomoCAN3','0x50','FUNCTION','0x16','Memory, on GRAD16 card, allow resetting pre-programmed scenarios'),(3,'DomoCAN3','0x51','OUT','0x12','ON/OFF'),(4,'DomoCAN3','0x60','IN','0x22','Input ON/OFF Switch'),(5,'Zwave','0xA0','Thermostat','0x31','Zwave Wall Radiator Thermostat');
 /*!40000 ALTER TABLE `ha_element_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,6 +446,7 @@ DROP TABLE IF EXISTS `ha_thermostat_timeslots`;
 CREATE TABLE `ha_thermostat_timeslots` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `function` varchar(6) NOT NULL DEFAULT 'HEATER' COMMENT 'HEATER or BOILER',
+  `zones` varchar(8) NOT NULL DEFAULT '1111111',
   `days` varchar(8) NOT NULL COMMENT '7 days of week + 1 time',
   `start` time NOT NULL,
   `stop` time NOT NULL,
@@ -459,7 +461,7 @@ CREATE TABLE `ha_thermostat_timeslots` (
 
 LOCK TABLES `ha_thermostat_timeslots` WRITE;
 /*!40000 ALTER TABLE `ha_thermostat_timeslots` DISABLE KEYS */;
-INSERT INTO `ha_thermostat_timeslots` VALUES (1,'HEATER','11111110','17:30:00','20:00:00','N'),(2,'HEATER','11111000','06:21:00','07:16:00','N'),(7,'BOILER','11111110','16:30:00','17:30:00','N'),(8,'HEATER','10000000','07:15:00','16:30:00','N');
+INSERT INTO `ha_thermostat_timeslots` VALUES (1,'HEATER', '1111111','11111110','17:30:00','20:00:00','N'),(2,'HEATER', '1111111','11111000','06:21:00','07:16:00','N'),(7,'BOILER', '1111111','11111110','16:30:00','17:30:00','N'),(8,'HEATER', '1111111','10000000','07:15:00','16:30:00','N');
 /*!40000 ALTER TABLE `ha_thermostat_timeslots` ENABLE KEYS */;
 UNLOCK TABLES;
 
