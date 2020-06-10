@@ -41,6 +41,7 @@ RUN curl -s https://getcomposer.org/installer | php && mv composer.phar /usr/loc
 RUN composer require restcord/restcord
 
 # Install required Python3 packages
+alias python=python3
 RUN pip3 install pytz
 RUN pip3 install --upgrade setuptools && pip3 install webexteamssdk
 # DiscordPy (https://discordpy.readthedocs.io/en/latest/intro.html#installing)
