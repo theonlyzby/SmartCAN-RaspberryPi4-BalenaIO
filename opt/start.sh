@@ -38,6 +38,9 @@ echo "Setting time zone to ${TIMEZONE=UTC}"
 echo "${TIMEZONE}" > /etc/timezone
 dpkg-reconfigure tzdata
 
+# Set python3 as default interpreter
+alias python=python3
+
 # Generate Env Variable => Container Start Date & Time
 export CONTAINER_START=$( stat /proc/1/cmdline | grep Modify | awk '{print $2 " " $3}' )
 
