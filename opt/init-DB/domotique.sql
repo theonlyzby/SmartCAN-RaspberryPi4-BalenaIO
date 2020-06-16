@@ -109,6 +109,7 @@ CREATE TABLE `chauffage_temp` (
   `id` int(10) NOT NULL,
   `valeur` float NOT NULL,
   `moyenne` tinyint(1) NOT NULL,
+  `battery` int(11) NOT NULL DEFAULT 101,
   `update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=latin1 COMMENT='STOCKAGE SONDE TEMPERATURE';
@@ -120,7 +121,7 @@ CREATE TABLE `chauffage_temp` (
 
 LOCK TABLES `chauffage_temp` WRITE;
 /*!40000 ALTER TABLE `chauffage_temp` DISABLE KEYS */;
-INSERT INTO `chauffage_temp` VALUES (1,2,0,'2017-12-28 16:00:00');
+INSERT INTO `chauffage_temp` VALUES (1,2,0,101,'2017-12-28 16:00:00');
 /*!40000 ALTER TABLE `chauffage_temp` ENABLE KEYS */;
 UNLOCK TABLES;
 
