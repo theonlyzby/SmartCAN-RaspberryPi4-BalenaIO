@@ -23,7 +23,7 @@
   $BoilerOUT=""; $BoilerOEM="";
 
   /* TEMPERATURE VOULUE, TEMPRETAURE MINIMUM, PRESENCE(ABSENCE-1), CIRCULATEUREAUCHAUDE (Boiler sur Circulateur séparé)  */
-  $sql="SELECT * FROM `" . TABLE_CHAUFFAGE_CLEF . "` WHERE 1;";
+  $sql="SELECT * FROM `" . TABLE_CHAUFFAGE_CLEF . "` WHERE `ZoneNber`=0;";
   $retour = mysqli_query($DB,$sql);
   while ($row = mysqli_fetch_array($retour, MYSQLI_BOTH)) {
     $clef = $row['clef'];
