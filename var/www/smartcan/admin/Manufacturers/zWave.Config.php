@@ -16,29 +16,10 @@ function ModConfig() {
   $action    = html_postget("action");
   $SubMenu   = html_postget("SubMenu");
   $zWavePath = html_postget("zWavePath");
+  $setTemp = html_postget("setTemp");
 
-  // Initial values
-  // USB Path
-  $myFile  = "../bin/python/zWaveConfig.py";
-  $reading = fopen($myFile,'r');
-  while(!feof($reading)) {
-	$line = fgets($reading,4096);
-	if (strpos($line,'   var = "')!==false)  { $USBPath = substr($line, 10, strrpos($line,'"')-10); }
-  } // END WHILE
-  fclose($reading);
-  // Test USB Path
-  $USBPathOK = is_file($USBPath);
-  
-
-/*
-$filename = '/dev/ttyACN0';
-
-if (file_exists($filename)) {
-    echo "The file $filename exists\n";
-} else {
-    echo "The file $filename does not exist\n";
-}
-*/
+  // Variables
+  $myFile  = "/data/www/smartcan/bin/python/zWaveConfig.py";
 	
   // Action Request?	
   if ($action!="") {
@@ -53,13 +34,58 @@ if (file_exists($filename)) {
 	if ($action=="ScanNetwork") {
 	  // Scan Zwave network
 	  $output = shell_exec("sudo /usr/bin/python3 /data/www/smartcan/bin/python/ScanZwave.py");
-	  
+	} // END IF
+	if ($action=="SavezWaves") {
+	  // Set zWave Delay
+	  $sql = "SELECT COUNT(*) AS County FROM `chauffage_clef` WHERE `clef`='zWaveDelay';";
+	  $query = mysqli_query($DB,$sql);
+	  $row = mysqli_fetch_array($query, MYSQLI_BOTH);
+	  if ($row["County"]==0) {
+	    $sql = "INSERT INTO `chauffage_clef` (`id`, `clef`, `ZoneNber`, `valeur`) VALUES (NULL, 'zWaveDelay', '0', '".$setTemp."');";
+	  } else {
+	    $sql = "UPDATE `chauffage_clef` SET `valeur` = '".$setTemp."' WHERE `clef` = 'zWaveDelay';";
+	  }
+	  $query = mysqli_query($DB,$sql);
+	  // Read and change zWave Path
+	  $output = shell_exec("sudo /bin/touch ".$myFile.".tmp");
+	  $output = shell_exec("sudo /bin/chmod 777 ".$myFile.".tmp");
+	  $reading   = fopen($myFile,'r');
+	  $writing   = fopen($myFile.".tmp","w");
+	  $replaced  = false;
+	  $OldPassdw = mysqli_PWD;
+	  // Parse config file
+	  while(!feof($reading)) {
+	    $line = fgets($reading,4096);
+		if (substr_count($line,"var =")>0) {
+		  // Change Password in file
+		  //echo("MySQL, change Password to $ROOTPasswd<br>");
+		  fwrite($writing,'   var = "'.$zWavePath.'"'.chr(13).chr(10));
+		  $replaced = true;
+		} else {
+		  // write line
+		  fwrite($writing,$line);
+		} // END IF
+      } // END WHILE      
+
+      fclose($reading); 
+	  fclose($writing);
+	  // swap files
+	  if ($replaced) {
+	    //echo("Replaced!<br>");
+        $output = shell_exec('sudo /bin/mv '.$myFile.'.tmp '.$myFile);
+	  } // END IF
 	} // END IF
   } // END IF
-  
-  // tests
-  $zWavePath = "/dev/ttyACM0";
-  
+
+  // USB Path
+  $reading = fopen($myFile,'r');
+  while(!feof($reading)) {
+	$line = fgets($reading,4096);
+	if (strpos($line,'var = "')!==false)  { $USBPath = substr($line, 10, strrpos($line,'"')-10); }
+  } // END WHILE
+  fclose($reading);
+  // Test USB Path
+  $USBPathOK = is_file($USBPath);  
 
 
   // Start Build Page ...
@@ -69,15 +95,10 @@ if (file_exists($filename)) {
   
   // zWave Management
   echo("<div class='post_info'>".$msg["zWave"]["MngzWaveTitle"][$Lang]."&nbsp;</div>" . CRLF);
-
   echo("	<div class='postcontent' name='plan' " .
         "style='" .
         " width: 550px; margin-left: 50px;'>" . CRLF);
-
-
   echo("<style>img {position:relative;}</style>" .CRLF);
-
-
   echo("<input type='hidden' name='action' id ='action' value=''/>" . CRLF);
   echo("<table>" . CRLF);
   
@@ -86,6 +107,23 @@ if (file_exists($filename)) {
   if ($USBPathOK) { echo("<img src='../www/images/check.png' width='20px' heigth='20px' />"); }
              else { echo("<img src='./images/caution.png' width='20px' heigth='20px' />"); }
   echo("</td></tr>" . CRLF);
+  
+  // Delay between 2 Zwave poll (Set temp every X minutes)
+  // zWave Polling Time?
+  $sql = "SELECT * FROM chauffage_clef WHERE `clef`='zWaveDelay';";
+  $query = mysqli_query($DB,$sql);
+  if (empty($query)) {
+    $setTemp = "10";
+    $sql = "INSERT INTO `chauffage_clef` (`id`, `clef`, `ZoneNber`, `valeur`) VALUES (NULL, 'zWaveDelay', '0', '".$setTemp."');";
+    $query = mysqli_query($DB,$sql);
+  } else {
+    //echo("OK zWaveDelay");
+    $row = mysqli_fetch_array($query, MYSQLI_BOTH);
+    $setTemp = $row['valeur'];
+  } // END IF
+
+  echo("<tr><td>".$msg["zWave"]["setTemp"][$Lang]."</b>&nbsp;</td><td><input type='text' length='3' name='setTemp' id='setTemp' value='".$setTemp."' size=20/> ");
+  echo("&nbsp;".$msg["zWave"]["setTempMin"][$Lang]."</td></tr>" . CRLF);
 
     // Submit
   echo("<tr><td colspan=2 align=middle><a href='javascript:submitform(\"SavezWaves\")'><img src='./images/ChangeButton.jpg' width='70px' heigth='60px' /></a></td></tr>");
@@ -101,12 +139,8 @@ if (file_exists($filename)) {
   // Reset / Empty Config
 
   echo("<tr><td style='vertical-align: middle'>".$msg["zWave"]["ResetEmpty"][$Lang]."</td><td align='center'>&nbsp;&nbsp;<a href='javascript:submitform(\"ResetEmpty\")'><img src='./images/Reset-btn.jpg' width='70px' heigth='60px' /></a></td></tr>"); 
-  echo("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>");    
-
-  
-
+  echo("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>");
   echo("</table>" . CRLF);
-  
   echo("<br><div class='clear'></div>" . CRLF);
   echo("</div>	<!-- end .postcontent -->" . CRLF);
 
@@ -152,14 +186,15 @@ if (file_exists($filename)) {
 	  for ($x = 1; $x <= $NberNodes; $x++) {
 		echo("<tr><td align='center'>" . $LzNodeID[$x] . "</td><td>" . $LzType[$x] . "</td><td>" .$LmanuName[$x] . " " . $LprodName[$x]  ."</td></td>");
 		if ($LprodType[$x]=="3") {
-		  $sql = "SELECT * FROM `ha_element` WHERE `Manufacturer` LIKE 'Zwave' AND `card_id`='".$LzNodeID[$x]."' AND `element_type`='0x31' AND `element_name`='" . substr($LprodName[$x],0,40) ."';";
+		  $sql = "SELECT * FROM `ha_element` WHERE `Manufacturer`='zWave' AND `card_id`='".str_pad($LzNodeID[$x], 4, "0", STR_PAD_LEFT)."' AND `element_type`='0x31';";
 		  $query = mysqli_query($DB,$sql);
-		  if (!$row = mysqli_fetch_array($query, MYSQLI_BOTH)) {
-		    $sql = "INSERT INTO `".TABLE_ELEMENTS."` (`id`, `Manufacturer`, `card_id`, `element_type`, `element_reference`, `element_name`) VALUES (NULL, 'Zwave', '".$LzNodeID[$x]."', '0x31', '', '" . substr($LprodName[$x],0,40) ."');";
+		  $row = mysqli_fetch_array($query, MYSQLI_BOTH);
+		  if (!$row['id']) {
+		    $sql2 = "INSERT INTO `".TABLE_ELEMENTS."` (`id`, `Manufacturer`, `card_id`, `element_type`, `element_reference`, `element_name`) VALUES (NULL, 'zWave', '".str_pad($LzNodeID[$x], 4, "0", STR_PAD_LEFT)."', '0x31', '', '" . substr($LprodName[$x],0,40) ."');";
 		  } else {
-		    $sql = "UPDATE `ha_element` SET `Manufacturer` = 'Zwave', `card_id` = '".$LzNodeID[$x]."', `element_type` = '0x31', `element_name` = '" . substr($LprodName[$x],0,40) ."' WHERE `id` = ".$row["id"].";";
+		    $sql2 = "UPDATE `ha_element` SET `Manufacturer` = 'zWave', `card_id` = '".str_pad($LzNodeID[$x], 4, "0", STR_PAD_LEFT)."', `element_type` = '0x31', `element_name` = '" . substr($LprodName[$x],0,40) ."' WHERE `id` = ".$row['id'].";";
 		  }
-		  $query = mysqli_query($DB,$sql);
+		  $query = mysqli_query($DB,$sql2);
 		} // END IF
 	  } // END FOR
 
