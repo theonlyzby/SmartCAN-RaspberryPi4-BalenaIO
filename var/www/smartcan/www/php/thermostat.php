@@ -20,6 +20,7 @@
  
  
    moyenne();
+   $Actionval="";
   /* FONCTIONS PHP AJAX */
   function moyenne() {
     // If new value receved => Refresh Interface (DIV IDs)
