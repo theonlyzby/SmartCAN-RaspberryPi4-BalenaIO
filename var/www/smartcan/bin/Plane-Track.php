@@ -120,6 +120,7 @@ function detect_plane($server, $debug=0) {
 
     } else {
       $outMessage = "No plane close to home";
+	  
     } // END IF
   } // END IF
   return $outMessage;

@@ -95,64 +95,85 @@ http://weather.noaa.gov/pub/data/observations/metar/decoded/EBBR.TXT
 
 
   /* RECUPERATION DES VALEURS DE TEMPERATURE ET MISES A JOUR DES GRAPHIQUES */
-  $sql = "SELECT * FROM `" . TABLE_CHAUFFAGE_SONDE . "` WHERE (`id_sonde` NOT LIKE 'ESP_%');";
+  $sql = "SELECT * FROM `" . TABLE_CHAUFFAGE_SONDE . "` WHERE 1 ORDER BY `id_sonde`;"; // 'ESP_%'    (`id_sonde` NOT LIKE '%_%')
   $retour_s = mysqli_query($DB,$sql);
   while ( $row_s = mysqli_fetch_array($retour_s, MYSQLI_BOTH) ) {
     $sensor      = $row_s["id_sonde"];
 	$sensor_id   = $row_s["id"];
 	$sensor_name = $row_s["description"];
 	$b           = "";
-	if (substr($sensor,0,2)=="28") {
-      // 1 Wire
-	  // 1Wire Mode = OWFS
-	  if (ONEWIRE_MODE=="OWFS") {
-        $a = exec('cat ' . PATHOWFS . '/' . $sensor . '/temperature');
-        $b = round(str_replace(' ', '', $a), 2);
-      } // END IF
-	  // 1Wire Mode = RaspberryPi
-	  if (ONEWIRE_MODE=="RPI") {
-	    $OneWireDir = "/sys/bus/w1/devices/" . $sensor . "/w1_slave";
-	    $data = array();
-	    $data = file($OneWireDir);  
-	    $data = explode('t=',$data[1]);
-	    $b = round((int)$data[1]/1000, 2); 
-	  } // END IF
-	  $sql = "UPDATE `" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = now() WHERE `id` = '" . $sensor_id . "';";
-	  mysqli_query($DB,$sql);
-	} else {
-	  // From http://weather.noaa.gov ?
-	  $URL = WEB_TEMP_URL . $sensor . ".TXT";
-	  $k=0;$b="";
-	  while (($k<3) && ($b=="")) {
-	    if (($handle = fopen($URL, "r")) !== FALSE) {
-          $data = fgetcsv($handle, 1000, " ");
-          $date = str_replace("/","-",$data[0]) . " " . $data[1] . ":00";
-          $data = fgetcsv($handle, 1000, " ");
-		  $j=0;
-		  while (isset($data[$j])) {
-		    if (strpos($data[$j],"/")) { break;}
-		    $j++;
-		  } // END WHILE
-		  $b="";
-          if (substr($data[$j],0,1)=="M") { $b = "-" . substr($data[$j],1, strpos($data[$j],"/")-1); } else { $b = substr($data[$j],0, strpos($data[$j],"/"));}
-          fclose($handle);
-		
-		  //echo(CRLF.CRLF.CRLF.CRLF.CRLF." Value b=$b=-".CRLF);
-		  // Update DB
-		  if ($b!="") {
-		    //$sql = "UPDATE ($sensor_id)`:" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = '" . $date . "' WHERE `id` = '" . $sensor_id . "';";
-		    $sql = "UPDATE `" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = now() WHERE `id` = '" . $sensor_id . "';";
-		    //echo("\n UPDATE Temp ".$sql.CRLF);
-		    $retour = mysqli_query($DB,$sql);
-		  } // END IF
-		  
-		  //echo("k=$k, Ext Temp=$b".CRLF);
-		} // END IF
-		$k++;
-      } // END WHILE
-	} // END IF
 	
-	// TempLog ... 4 Pitchout
+	// From Other manufacturer (than 1wire and Internet)?
+	if (strpos($sensor, "_") !== false) {
+	  //echo("External Sensor = " . $sensor . ", strpos=" . strpos($sensor, "_") . CRLF);
+	  include_once(PATHBIN . "Manufacturers".'/'.substr($sensor,0,strpos($sensor, "_")).'.Addon.TempsBin.php');
+	  $addOnClass_fullName = substr($sensor,0,strpos($sensor, "_")) . "_class";
+	  $addOnClass          = new $addOnClass_fullName();
+	  $b = $addOnClass->get_Temp($sensor);
+	  if ($b!="N/A") {
+	    //echo("GO for ".$sensor."! temp=".$b . CRLF);
+		//$sql = "UPDATE `" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = now() WHERE `id` = '" . $sensor_id . "';";
+	    //mysqli_query($DB,$sql);
+	  } else {
+	    //echo("NO GO for ".$sensor.CRLF);
+	  } // END IF
+	  //exit; 
+	} else {
+	  // Built in Sensor readin (1wire or Internet)
+	  //echo("Included grabber for :".$sensor.CRLF);
+	
+	  if (substr($sensor,0,2)=="28") {
+        // 1 Wire
+	    // 1Wire Mode = OWFS
+	    if (ONEWIRE_MODE=="OWFS") {
+          $a = exec('cat ' . PATHOWFS . '/' . $sensor . '/temperature');
+          $b = round(str_replace(' ', '', $a), 2);
+        } // END IF
+	    // 1Wire Mode = RaspberryPi
+	    if (ONEWIRE_MODE=="RPI") {
+	      $OneWireDir = "/sys/bus/w1/devices/" . $sensor . "/w1_slave";
+	      $data = array();
+	      $data = file($OneWireDir);  
+	      $data = explode('t=',$data[1]);
+	      $b = round((int)$data[1]/1000, 2); 
+	    } // END IF
+	    $sql = "UPDATE `" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = now() WHERE `id` = '" . $sensor_id . "';";
+	    mysqli_query($DB,$sql);
+	  } else {
+	    // From http://weather.noaa.gov ?
+	    $URL = WEB_TEMP_URL . $sensor . ".TXT";
+	    $k=0;$b="";
+	    while (($k<3) && ($b=="")) {
+	      if (($handle = fopen($URL, "r")) !== FALSE) {
+            $data = fgetcsv($handle, 1000, " ");
+            $date = str_replace("/","-",$data[0]) . " " . $data[1] . ":00";
+            $data = fgetcsv($handle, 1000, " ");
+		    $j=0;
+		    while (isset($data[$j])) {
+		      if (strpos($data[$j],"/")) { break;}
+		      $j++;
+		    } // END WHILE
+		    $b="";
+            if (substr($data[$j],0,1)=="M") { $b = "-" . substr($data[$j],1, strpos($data[$j],"/")-1); } else { $b = substr($data[$j],0, strpos($data[$j],"/"));}
+            fclose($handle);
+		
+		    //echo(CRLF.CRLF.CRLF.CRLF.CRLF." Value b=$b=-".CRLF);
+		    // Update DB
+		    if ($b!="") {
+		      //$sql = "UPDATE ($sensor_id)`:" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = '" . $date . "' WHERE `id` = '" . $sensor_id . "';";
+		      $sql = "UPDATE `" . TABLE_CHAUFFAGE_TEMP . "` SET `valeur` = '" . $b . "', `update` = now() WHERE `id` = '" . $sensor_id . "';";
+		      //echo("\n UPDATE Temp ".$sql.CRLF);
+		      $retour = mysqli_query($DB,$sql);
+		    } // END IF
+		  
+		    //echo("k=$k, Ext Temp=$b".CRLF);
+		  } // END IF
+		  $k++;
+        } // END WHILE
+	  } // END IF
+	} // END IF Manufacturer
+	
+	  // TempLog ... 4 Pitchout
 	if ((fmod(date('i'),2)==0) && (EXCELTEMPLOGSPATH!='') && ($b!="")) {
 	  $handle = fopen(EXCELTEMPLOGSPATH . date('Ymd') . "-TempLog.csv", "a");
 	  fwrite($handle, date('d/m/Y') . "," . date('H:i:00') . "," . $sensor_name . "," . $b . chr(13));

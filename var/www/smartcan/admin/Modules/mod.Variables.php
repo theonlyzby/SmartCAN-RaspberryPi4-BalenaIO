@@ -79,6 +79,8 @@ function Variables() {
 	if (($ROOTPasswd!="") && ($ROOTPasswd==$ROOTVerif)) {
 	  //echo("<b>MySQL Password change Request!</b><br>");
 	  $myFile    = $_SERVER['DOCUMENT_ROOT']."/smartcan/www/conf/config.php";
+	  $output    = shell_exec("sudo /bin/touch ".$myFile.".tmp");
+	  $output    = shell_exec("sudo /bin/chmod 777 ".$myFile.".tmp");
 	  $reading   = fopen($myFile,'r');
 	  $writing   = fopen($myFile.".tmp","w");
 	  $replaced  = false;
@@ -102,12 +104,15 @@ function Variables() {
 	  // swap files
 	  if ($replaced) {
 	    //echo("Replaced!<br>");
-        copy($myFile.".tmp", $myFile);
+        //copy($myFile.".tmp", $myFile);
+		$output = shell_exec('sudo /bin/cp '.$myFile.'.tmp '.$myFile);
 		exec("mysqladmin -u root -p'" . $OldPassdw . "' password '" . $ROOTPasswd . "'");
       } // END IF
 	  
 	  // Modify also MySQL Password in NGINX config => LUA MySQL
-	  $myFile = "/usr/local/nginx/conf/nginx.conf";
+	  $myFile    = "/usr/local/nginx/conf/nginx.conf";
+	  $output    = shell_exec("sudo /bin/touch ".$myFile.".tmp");
+	  $output    = shell_exec("sudo /bin/chmod 777 ".$myFile.".tmp");
 	  $reading   = fopen($myFile,'r');
 	  $writing   = fopen($myFile.".tmp","w");
 	  $OldPassdw = mysqli_PWD;
@@ -126,7 +131,8 @@ function Variables() {
 
       fclose($reading); 
 	  fclose($writing);
-	  copy($myFile.".tmp", $myFile);
+	  $output = shell_exec('sudo /bin/cp '.$myFile.'.tmp '.$myFile);
+	  //copy($myFile.".tmp", $myFile);
 	  
 	} // END IF
 	

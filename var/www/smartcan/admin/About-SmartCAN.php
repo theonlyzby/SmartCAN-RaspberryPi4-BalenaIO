@@ -24,7 +24,7 @@ include_once '../www/conf/config.php';
 
 
 
-echo("<p><h1 style=\"text-align: center;\">SmartCAN<br>Version 0.9.7-Beta</h1></p>");
+echo("<p><h1 style=\"text-align: center;\">SmartCAN<br>Version 2020-07</h1></p>");
 
 echo("<p>SmartCAN is an Open Source (Apache v2 licnese) Home Automation Compagnion Web Pioject, at first and still web monitoring functions are the priority, but next release should include coding and automation features (probaly based upon blickly, not yet committed feature, ... don't ask for a ETA! ;-) ).</p>" . CRLF);
 
@@ -58,6 +58,16 @@ echo("<p>Big Thank you to <a href src='http://www.abcelectronique.com/bigonoff/f
 
 echo("<p><h1 style=\"text-align: center;\">Release Notes</h1></p>");
 
+
+// Version 2020.07
+
+echo("<p><h2>Version: 2020.07</h2></p>" . CRLF);
+
+echo("<p><h3>Added/Modified:</h3></p>" . CRLF);
+
+echo("<p>- Zwave Wall Radiator thermostats. <br>- Zones with heating exceptions to support Zwave Wall Radiator thermsotats. <br>- Misc bug fixes and enhancements.  </p>" . CRLF);
+
+echo("<p>&nbsp;</p>" . CRLF);
 
 // Version 2019.11
 

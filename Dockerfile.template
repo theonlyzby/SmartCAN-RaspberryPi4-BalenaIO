@@ -8,7 +8,7 @@
 FROM balenalib/raspberrypi3-debian:buster
 
 # Use apt-get to Update/Upgrade and
-# Install all other required packages
+# Install all other required packages ####  librtlsdr-dev
 #RUN echo "deb http://deb.debian.org/debian stretch main non-free" >/etc/apt/sources.list
 RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y 
 RUN apt-get install -yq debconf-utils \
@@ -16,7 +16,8 @@ RUN apt-get install -yq debconf-utils \
        python3 python3-pip wpasupplicant sudo make gcc libpcre3 autoconf automake libtool net-tools php7.3-gmp php7.3-dev \
        php7.3 php7.3-curl php7.3-gd php7.3-fpm php7.3-cli php7.3-opcache php7.3-mysqli php7.3-xml php7.3-mbstring \
        ntp samba samba-common-bin systemd git-core git cmake libusb-1.0-0-dev build-essential pkg-config \
-       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev librtlsdr-dev
+       libffi-dev libnacl-dev python3-dev curl mosquitto mosquitto-clients libmosquitto-dev \
+	   python3-rpi.gpio libudev-dev g++ libyaml-dev openzwave python3-setuptools
 
 # Install wiringpi (64 bits Modified Version)
 RUN cd /opt && git clone git://github.com/Vicinzu/wiringPi-arm64 \
@@ -41,7 +42,11 @@ RUN curl -s https://getcomposer.org/installer | php && mv composer.phar /usr/loc
 RUN composer require restcord/restcord
 
 # Install required Python3 packages
+RUN pip3 install cython wheel six pyserial
+RUN pip3 install 'PyDispatcher>=2.0.5'
+RUN pip3 install python_openzwave
 RUN pip3 install pytz
+RUN pip3 install uptime
 RUN pip3 install --upgrade setuptools && pip3 install webexteamssdk
 # DiscordPy (https://discordpy.readthedocs.io/en/latest/intro.html#installing)
 RUN pip3 install -U discord.py
@@ -75,12 +80,18 @@ COPY . .
 # Move config files
 # RUN mv /var/config-files/* /*
 
+# Copy zWave files
+RUN rm -r /etc/openzwave/
+RUN cp -avr /usr/local/lib/python3.7/dist-packages/python_openzwave/ozw_config /etc/openzwave
+RUN cp /opt/eur_spiritz.xml /etc/openzwave/eurotronic/eur_spiritz.xml
+RUN cp /opt/command.py /usr/local/lib/python3.7/dist-packages/openzwave/command.py
+
 # Configure and start Samba
 RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
 
 # Install RTL-SDR Driver
 # Install dump1090
-# OLD server:  && git clone git://github.com/MalcolmRobb/dump1090.git \
+# OLD server:  && git clone git://github.com/MalcolmRobb/dump1090.git \cd build
 # Previous server: && git clone git://github.com/steel101/dump1090.git \
 # Last try NOK: && git clone git://github.com/antirez/dump1090.git \
 # RUN cd /srv \
@@ -90,10 +101,25 @@ RUN pdbedit -i smbpasswd:/opt/samba-users.smbback
 #    && cd build \
 #    && cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON \
 #    && ldconfig \
-#    && make \
+#    && make \make
 #    && make install \
 #    && ldconfig
-RUN cp /srv/librtlsdr.pc /usr/lib/arm-linux-gnueabihf/pkgconfig/librtlsdr.pc
+
+# RTL-SR Blog Driver
+RUN cd /srv \
+	&& git clone git://github.com/rtlsdrblog/rtl-sdr-blog.git \
+	&& cd rtl-sdr-blog/ \
+	&& mkdir build \
+	&& cd build \
+	&& cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON\
+	&& make \
+	&& sudo make install \
+	&& sudo cp ../rtl-sdr.rules /etc/udev/rules.d/ \
+	&& sudo ldconfig \
+	&& echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+	
+	
+#RUN cp /srv/librtlsdr.pc /usr/lib/arm-linux-gnueabihf/pkgconfig/librtlsdr.pc
 RUN cd /srv \
     && git clone git://github.com/steel101/dump1090.git \
     && cd dump1090 \
@@ -102,7 +128,7 @@ RUN cd /srv \
     && printf 'blacklist dvb_usb_rtl28xxu\nblacklist rtl2832\nblacklist rtl2830\n' > nortl.conf \
     && cp ./nortl.conf /etc/modprobe.d/no-rtl.conf
 
-# RUN cp /srv/nortl.conf /etc/modprobe.d/no-rtl.conf
+#RUN cp /srv/nortl.conf /etc/modprobe.d/no-rtl.conf
 
 # Install ZigBee Libcaot library (Ikea Tradfri and Philips Hue)
 RUN cd /opt && git clone --recursive https://github.com/obgm/libcoap.git \

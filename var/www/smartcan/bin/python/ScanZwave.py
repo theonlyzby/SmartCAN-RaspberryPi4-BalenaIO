@@ -5,7 +5,7 @@ import sys, os
 import resource
 #logging.getLogger('openzwave').addHandler(logging.NullHandler())
 #logging.basicConfig(level=logging.DEBUG)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 logger = logging.getLogger('openzwave')
 import openzwave

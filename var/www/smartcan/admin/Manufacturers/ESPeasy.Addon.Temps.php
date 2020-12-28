@@ -83,6 +83,9 @@ class ESPeasy_class {
 		   '} else { document.getElementById("NewESPeasy0").style.display = "none";document.getElementById("NewESPeasy1").style.display = "none";}');
   } // END FUNCTION javaChange
 
+  function HTMLcheck() {
+    // No extra specific checks required before submit
+  } // END FUNCTION HTMLcheck
 
 } // END Class
 

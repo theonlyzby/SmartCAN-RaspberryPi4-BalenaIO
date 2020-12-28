@@ -114,11 +114,11 @@ if(isset($_GET['logout']))
  }
 
  
-if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) || !isset($_SESSION["login"]))
+if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['PHP_AUTH_PW']) && !isset($_SESSION["login"]))
  {
    header("WWW-Authenticate: Basic realm=\"" . $msg["MAIN"]["title"]["en"] . "\"");
    header("HTTP/1.0 401 Unauthorized");
-   //session_destroy();
+   session_destroy();
    $_SESSION["login"] = true;
    echo "<font color='white' size='16pt'>".$msg["MAIN"]["forbidden"]["en"]." ... ";
    echo "[<a style='color:#ffffff; font-style: bold; size: 16pt;' href='" . $_SERVER['PHP_SELF'] . "'>Login</a>]</font>";
@@ -238,8 +238,8 @@ if ($Access_Level>=1) {
 	  }
 	  $i++;
 	} // END While
-	$Top_SubMenu[10]["Text"][($i+1)] = "&nbsp;";             $Top_SubMenu[10]["URL"][($i+1)] = "#";                                        $Top_SubMenu[10]["JAVA"][($i+1)] = "";
-	$Top_SubMenu[10]["Text"][($i+2)] = $msg["INSTALLMOD"][11][$Lang];     $Top_SubMenu[10]["URL"][($i+2)] = "./index.php?page=Modules&SubMenu=Install"; $Top_SubMenu[10]["JAVA"][($i+2)] = "";
+	$Top_SubMenu[10]["Text"][($j+1)] = "&nbsp;";             $Top_SubMenu[10]["URL"][($j+1)] = "#";                                        $Top_SubMenu[10]["JAVA"][($j+1)] = "";
+	$Top_SubMenu[10]["Text"][($j+2)] = $msg["INSTALLMOD"][11][$Lang];     $Top_SubMenu[10]["URL"][($j+2)] = "./index.php?page=Modules&SubMenu=Install"; $Top_SubMenu[10]["JAVA"][($j+2)] = "";
 	
 	$Top_SubMenu[11]["Text"][01] = $msg["ADMINMENU"][1][$Lang]; $Top_SubMenu[11]["URL"][01] = "#";                                            $Top_SubMenu[11]["JAVA"][01] = "ConfirmAction(\"ReBoot\",\"".$msg["CONFIRM"]["REBOOT"][$Lang]."\");";
 	$Top_SubMenu[11]["Text"][02] = $msg["ADMINMENU"][2][$Lang]; $Top_SubMenu[11]["URL"][02] = "./index.php?page=Admin&SubMenu=2";             $Top_SubMenu[11]["JAVA"][02] = "ConfirmAction(\"ShutDown\",\"".$msg["CONFIRM"]["SHUTDOWN"][$Lang]."\");";

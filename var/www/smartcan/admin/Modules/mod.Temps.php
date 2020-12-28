@@ -3,10 +3,7 @@
 function Temps() {
 
   // Variables Passed Globally
-  global $Access_Level;
-  global $DB;
-  global $msg;
-  global $Lang;
+  global $Access_Level, $DB, $msg, $Lang, $Moyenne;
   
   // Includes
   include "./lang/admin.module.Temps.php";
@@ -34,8 +31,25 @@ function Temps() {
   // Delete Temp
   if ($action=="DeleteTemp") {
     $TempD = html_get("TempD");
-	$sql = mysqli_real_escape_string($DB,"DELETE FROM `chauffage_sonde` " .
-              " WHERE `id` = \"" . $TempD . "\";");
+	// Other zone?
+	$sql = mysqli_real_escape_string($DB,"SELECT * FROM `chauffage_sonde` WHERE `id` = \"" . $TempD . "\";");
+	$sql = str_replace(chr(92).chr(34),"'",$sql);
+	$query=mysqli_query($DB,$sql);
+	$row = mysqli_fetch_array($query, MYSQLI_BOTH);
+	$zone = $row['moyenne'];
+	if ($zone!="0" && $zone!="1") {
+	  $sql = mysqli_real_escape_string($DB,"SELECT COUNT(*) AS County FROM `chauffage_sonde` WHERE `moyenne` = \"" . $zone . "\";");
+	  $sql = str_replace(chr(92).chr(34),"'",$sql);
+	  $query=mysqli_query($DB,$sql);
+	  $row = mysqli_fetch_array($query, MYSQLI_BOTH);
+	  if ($row['County']==1) {
+	    $sql = "DELETE FROM `chauffage_clef` WHERE `ZoneNber`='".$zone."';";
+		mysqli_query($DB,$sql);
+		$sql = "UPDATE `ha_thermostat_zones` SET `Name` = '' WHERE `ZoneNber` = '".$zone."';";
+	    mysqli_query($DB,$sql);
+	  }
+	} // END IF
+	$sql = mysqli_real_escape_string($DB,"DELETE FROM `chauffage_sonde` WHERE `id` = \"" . $TempD . "\";");
 	$sql = str_replace(chr(92).chr(34),"'",$sql);
 	if (!$query=mysqli_query($DB,$sql)) { log_this("Erreur DB[$sql]"); }
 	$sql = mysqli_real_escape_string($DB,"DELETE FROM `chauffage_temp` " .
@@ -71,17 +85,16 @@ function Temps() {
 	  $Temp_Name = html_get("Temp_Name");
 	  $id_sonde  = html_get("id_sonde");
 	  $Moyenne   = html_get("Moyenne"); if ($Moyenne=="") { $Moyenne = "0"; }
-	  //id_sonde=NewEsp ESP_IP
-	  // ESP?
+	  // Other Manufacturer Sensor?
 	  if (substr($id_sonde,0,3)=="New") { 
 	    include_once(PATHWEBADMIN . "Manufacturers".'/'.substr($id_sonde,3).'.Addon.Temps.php');
 		$addOnClass_fullName = substr($id_sonde,3) . "_class";
 		$addOnClass          = new $addOnClass_fullName();
 		$id_sonde = $addOnClass->new();
-		
 	    //echo(substr($id_sonde,3)); exit; 
 	  }
-	  //echo("id_sonde=".$id_sonde);
+	  //echo("id_sonde=".$id_sonde.", Moyenne=".$Moyenne."<br>".CRLF);
+	  //exit();
 	  
 	  // Saves sensor into DB
 	  $sql = "INSERT INTO `chauffage_sonde` (`id`, `id_sonde`, `moyenne`, " .
@@ -94,14 +107,32 @@ function Temps() {
       if (!$query=mysqli_query($DB,$sql)) { log_this("Erreur DB[$sql]"); }
 	  // Also in TEMP Table
 	  $sql     = "SELECT * FROM `chauffage_sonde` WHERE `id_sonde`='" . $id_sonde . "';";
+	  //echo("Search for id: sql=" . $sql ."<br>");
 	  $query   = mysqli_query($DB,$sql);
 	  $row     = mysqli_fetch_array($query, MYSQLI_BOTH);
       $idT     = $row['id'];
 	  $moyenne = $row['moyenne'];
+	  //echo("id=".$idT ."<br>");
 	  if ($idT!=0) {
-	    $sql     = "INSERT INTO `domotique`.`chauffage_temp` (`id`, `valeur`, `moyenne`, `update`) VALUES ('" . $idT . "', '', '" . $moyenne . "', '0000-00-00 00:00:00');";
+	    $sql     = "INSERT INTO `domotique`.`chauffage_temp` (`id`, `valeur`, `moyenne`, `update`) VALUES ('" . $idT . "', '0', '" . $moyenne . "', '0000-00-00 00:00:00');";
 		//echo("<br><b>sql=</b> $sql <br>");
 	    if (!$query=mysqli_query($DB,$sql)) { log_this("Erreur DB[$sql]"); }
+		// Needs to declare temeprature and min into key table?
+		if ($moyenne!="0" && $moyenne!="1") {
+		  $sql   = "SELECT COUNT(*) AS County FROM `chauffage_clef` WHERE `clef`='temperature' AND `ZoneNber`=".$moyenne.";";
+		  $query = mysqli_query($DB,$sql);
+		  $row   = mysqli_fetch_array($query, MYSQLI_BOTH);
+		  if ($row['County']==0) {
+			$sql = "SELECT * FROM `chauffage_clef` WHERE `ZoneNber`=0;";
+			$query = mysqli_query($DB,$sql);
+			while ($row=mysqli_fetch_array($query, MYSQLI_BOTH)) {
+			  if ($row['clef']=="temperature") { $temperature = $row['valeur']; }
+			  if ($row['clef']=="tempminimum") { $tempminimum = $row['valeur']; } 
+			} // END WHILE
+			$sql = "INSERT INTO `chauffage_clef` (`id`, `clef`, `ZoneNber`, `valeur`) VALUES (NULL, 'temperature', '".$moyenne."', '".$temperature."'), (NULL, 'tempminimum', '".$moyenne."', '".$tempminimum."')";
+			$query = mysqli_query($DB,$sql);
+		  } // END IF
+		} // END IF
 	  } // END IF
     } // End IF
   } // End IF
@@ -313,12 +344,14 @@ document.getElementById("moveMe"+e).src="../www/images/fond_temperature_silver.p
   while ( $row = mysqli_fetch_array($query, MYSQLI_BOTH) ) {
     $id[$i]          = $row['id'];
     $description[$i] = $row['description'];
+	$moyenne[$i]       = $row['moyenne'];
     $img_x[$i]       = $row['img_x'];
     $img_y[$i]       = $row['img_y'];
     $web_offset[$i]  = ($i-1)*60;
+	if (($moyenne[$i]!=0) && ($moyenne[$i]!=1)) { $img[$i] = $moyenne[$i]; } else { $img[$i] = "silver"; }
     // Display on page
     echo("<img id='moveMe" . $i . "' " .
-         "src='../www/images/fond_temperature_silver.png' " .
+         "src='../www/images/fond_temperature_".$img[$i].".png' " .
          "onmousedown='coordinates(\"moveMe" . $i . "\")' />" . CRLF);
     echo("<script type='text/javascript'>" . CRLF);
     echo("//Movable image" . CRLF);
@@ -617,7 +650,7 @@ function CheckLevelName(lID) {
   } // End While
 ?>
 
-&nbsp;&nbsp;<a href='javascript:void(1);' onClick='showOverlay("NewTemp","Temp_Name");'><img width='14' height='14' align='absmiddle' src='../www/images/ajouter.png' />&nbsp;&nbsp;&nbsp;<?php echo($msg["TEMPS"]["AddSensor"]["en"]); ?></a>
+&nbsp;&nbsp;<a href='javascript:void(1);' onClick='showOverlay("NewTemp","Temp_Name");'><img width='14' height='14' align='absmiddle' src='../www/images/ajouter.png' />&nbsp;&nbsp;&nbsp;<?php echo($msg["TEMPS"]["AddSensor"][$Lang]); ?></a>
   </ul></div>
 
 
@@ -639,6 +672,17 @@ function TempDelete(id) {
 function CheckDropSubmitform(field,drop,action) {
   var ll = document.getElementById(field).value;
   var dd = document.getElementById(drop).value;
+  <?php
+  $nbrAddons = 0;
+  while (isset($AddOn[$nbrAddons])) {  
+    include_once(PATHWEBADMIN . "Manufacturers".'/'.$AddOn[$nbrAddons].'.Addon.Temps.php');
+    $addOnClass_fullName = $AddOn[$nbrAddons] . "_class";
+    $addOnClass          = new $addOnClass_fullName();
+    $addOnClass->HTMLcheck();
+    $nbrAddons++;
+  } // END WHILE
+  echo(CRLF)
+  ?>
   if (ll.length>=1) {
     if (dd.length>=1) {
       submitform(action);
@@ -766,8 +810,8 @@ echo("" . CRLF);
 ?>
 
 <tr><td width="20%">&nbsp;</td>
-<td width="30%" align="right"><?php echo($msg["TEMPS"]["UseItForMean"][$Lang]); ?>&nbsp;&nbsp;&nbsp;<br><br></td> 
-<td width="50%"><input type="checkbox" checked name="Moyenne" id="Moyenne" value="1"></td></tr>
+<td width="30%" align="right"><div id="Mean01" style="display: table-cell;"><?php echo($msg["TEMPS"]["UseItForMean"][$Lang]); ?></div>&nbsp;&nbsp;&nbsp;<br><br></td> 
+<td width="50%"><div id="Mean02" style="display: table-cell;"><input type="checkbox" checked name="Moyenne" id="Moyenne" value="1"></div></td></tr>
 
 <tr><td width="20%">&nbsp;
 <td width="30%"><div class="postcontent">

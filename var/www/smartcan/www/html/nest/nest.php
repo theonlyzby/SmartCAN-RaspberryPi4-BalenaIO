@@ -1,6 +1,8 @@
 <?php
 include_once '../../lang/www.thermostat.php';
 $Lang = "en"; if (isset($_GET["lang"])) { $Lang = $_GET["lang"];}
+$zone = "0"; if (isset($_GET["zone"])) { $zone = $_GET["zone"];}
+$zoneColor = "000000"; if (isset($_GET["zoneColor"])) { $zoneColor = $_GET["zoneColor"];}
 ?>
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -53,16 +55,16 @@ a {		color: #FFF;
  border-radius:350px;
  -webkit-border-radius: 350px;
  
-  
+  echo("zone=".$zone.",zoneColor=".$zoneColor."<br>");
  /* Permet de mettre un dégradé sur le cercle en fonction de tous les navigateurs */
- background: #eaeaea; /* Old browsers */
- background: -webkit-radial-gradient(top left, ellipse cover, #eaeaea 0%,#eaeaea 11%,#0e0e0e 61%); /* Chrome10+,Safari5.1+ */
- background: -moz-radial-gradient(top left, ellipse cover,  #eaeaea 0%, #eaeaea 11%, #0e0e0e 61%); /* FF3.6+ */
- background: -webkit-gradient(radial, top left, 0px, top left, 100%, color-stop(0%,#eaeaea), color-stop(11%,#eaeaea), color-stop(61%,#0e0e0e)); /* Chrome,Safari4+ */
- background: -o-radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#0e0e0e 61%); /* Opera 12+ */
- background: -ms-radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#0e0e0e 61%); /* IE10+ */
- background: radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#0e0e0e 61%); /* W3C */
- filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaeaea', endColorstr='#0e0e0e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+ background: #<?php echo($zoneColor); ?>; /* Old browsers 0e0e0e RED:754110, Orange:755210, Green:157510, Cyan:107275, Blue:231075, Purple:751033 */
+ background: -webkit-radial-gradient(top left, ellipse cover, #eaeaea 0%,#eaeaea 11%,#<?php echo($zoneColor); ?> 61%); /* Chrome10+,Safari5.1+ */
+ background: -moz-radial-gradient(top left, ellipse cover,  #eaeaea 0%, #eaeaea 11%, #<?php echo($zoneColor); ?> 61%); /* FF3.6+ */
+ background: -webkit-gradient(radial, top left, 0px, top left, 100%, color-stop(0%,#eaeaea), color-stop(11%,#eaeaea), color-stop(61%,#<?php echo($zoneColor); ?>)); /* Chrome,Safari4+ */
+ background: -o-radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#<?php echo($zoneColor); ?> 61%); /* Opera 12+ */
+ background: -ms-radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#<?php echo($zoneColor); ?> 61%); /* IE10+ */
+ background: radial-gradient(top left, ellipse cover,  #eaeaea 0%,#eaeaea 11%,#<?php echo($zoneColor); ?> 61%); /* W3C */
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaeaea', endColorstr='#<?php echo($zoneColor); ?>',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
  
  /* Permet de ne pas pouvoir être sélectionné */
  -webkit-touch-callout: none;
@@ -777,6 +779,8 @@ function getModeForce()
 	} // ENDIF
 }
 
+function sleepThenAct(){ sleepFor(3000); console.log("hello js sleep !"); }
+
 function setTempConfort()
 {
 	  window.parent.xajax_updateConsigne(temperatureConfort);
@@ -872,7 +876,8 @@ $('#hour').click(function(){
   ChangeMode("mouse");
   $( "#nestValue" ).html("1h");
   window.parent.xajax_HeatNow(1);
-  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},100);
+  TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},10);
+  sleepThenAct();
 });
 
 // Lorsque l'on clique sur l'icone 2h, on sauvegarde et on fait tout disparaitre
@@ -886,7 +891,8 @@ $('#hour2').click(function(){
   ChangeMode("mouse");
    $( "#nestValue" ).html("2h");
    window.parent.xajax_HeatNow(2);
-   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},100);
+   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},10);
+   sleepThenAct();
 });
 
 // Lorsque l'on clique sur l'icone fire, le mode de demande immédiate de chauffage disparait
@@ -909,6 +915,21 @@ $('#feuille').click(function(){
 // Detects keypresses and launch actions
 $(parent).bind('keydown', '$', function(evt){
   //
+  // Request Config?
+  if (evt.keyCode==67) {
+    parent.showOverlay("ConfigDIV","day[0][0]");
+  }
+  // 1 up to 9 Hour(s) direct heating
+  if ((evt.keyCode>=49) && (evt.keyCode<=57) && (parent.StatusOverlay('ConfigDIV')!='visible')) {
+   window.parent.xajax_HeatNow(parseInt(evt.keyCode)-48);
+   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},10);
+  }
+  // 1 up to 9 Hour(s) direct heating (on Keypad)
+  if ((evt.keyCode>=97) && (evt.keyCode<=105) && (parent.StatusOverlay('ConfigDIV')!='visible')) {
+   window.parent.xajax_HeatNow(parseInt(evt.keyCode)-96);
+   TimeOUT_RELOAD=setTimeout(function(){window.parent.location.reload(true)},10);
+  }
+  
   // Left or Right => Change mode
   if ((evt.keyCode==37) || (evt.keyCode==39)) {
     //alert("Left or Right:" + event.keyCode);
@@ -991,11 +1012,14 @@ $('#nestTitle').click(function(){
 
 // Manage Mode Change on screen 
 function ChangeMode(mode) {
+  // Restrict available modes when in specific Zone
+<?php if($zone!="0") { echo('  if ((currentMode=="") || (currentMode=="&nbsp;")) { currentMode="Auto"; }');}?>  
   // Reduces modes when using keys to scroll modes
   if (mode=="keys") {
     //alert(currentMode);
     if ((currentMode=="") || (currentMode=="TEMP MINI")) { currentMode="&nbsp;&nbsp;"; }
   }
+
   if ( currentMode == "HEAT NOW" )
    
    {

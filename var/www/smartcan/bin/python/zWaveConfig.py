@@ -3,5 +3,4 @@ def USBpath():
    return var
    
 def ConfigPath():
-   var = "/etc/openzwave"
-   return var
+   var="/etc/openzwave"

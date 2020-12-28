@@ -5,7 +5,7 @@ import sys, os
 import resource
 #logging.getLogger('openzwave').addHandler(logging.NullHandler())
 #logging.basicConfig(level=logging.DEBUG)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 logger = logging.getLogger('openzwave')
 import openzwave
@@ -17,20 +17,20 @@ from openzwave.network import ZWaveNetwork
 from openzwave.option import ZWaveOption
 import time
 from zWaveConfig import USBpath, ConfigPath
+import json
+import argparse
 
 device = USBpath()
+log="Error"
 
-log="Debug"
+# Arguments from command prompt
+parser = argparse.ArgumentParser(description="zWave - Set Temperature Process")
+parser.add_argument("-d", "--debug", help="Debug actions and timings on screen", action="store_true")
+parser.add_argument("-n", "--node-ids", nargs="+", type=int, dest="nodeids", help="Provide Zwave Thermostat nodeIDs to get values")
+parser.add_argument("-t", "--node-temp", nargs="+", type=float, dest="nodeTemp", help="Provide Zwave Thermostat Temperature set value")
 
-for arg in sys.argv:
-    if arg.startswith("--device"):
-        temp,device = arg.split("=")
-    elif arg.startswith("--log"):
-        temp,log = arg.split("=")
-    elif arg.startswith("--help"):
-        print("help : ")
-        print("  --device=/dev/yourdevice ")
-        print("  --log=Info|Debug")
+args = parser.parse_args()
+if args.debug:           debug=1
 
 #Define some manager options
 options = ZWaveOption(device, \
@@ -38,7 +38,7 @@ options = ZWaveOption(device, \
   user_path=".", cmd_line="")
 options.set_log_file("OZW_Log.log")
 options.set_append_log_file(False)
-options.set_console_output(True)
+options.set_console_output(False)
 options.set_save_log_level(log)
 #options.set_save_log_level('Info')
 options.set_logging(False)
@@ -47,33 +47,19 @@ options.lock()
 #Create a network object
 network = ZWaveNetwork(options, log=None)
 
-print("------------------------------------------------------------")
-print("Waiting for network awaked : ")
-print("------------------------------------------------------------")
+time_started = 0
+
 for i in range(0,300):
     if network.state>=network.STATE_AWAKED:
-
-        print(" done")
-        print("Memory use : {} Mo".format( (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0)))
         break
     else:
-        sys.stdout.write(".")
-        sys.stdout.flush()
         time_started += 1
         time.sleep(1.0)
-if network.state<network.STATE_AWAKED:
-    print(".")
-    print("Network is not awake but continue anyway")
 
-print("------------------------------------------------------------")
-print("Waiting for network ready : ")
-print("------------------------------------------------------------")
 for i in range(0,300):
     if network.state>=network.STATE_READY:
-        print(" done in {} seconds".format(time_started))
         break
     else:
-        sys.stdout.write(".")
         time_started += 1
         #sys.stdout.write(network.state_str)
         #sys.stdout.write("(")
@@ -83,29 +69,44 @@ for i in range(0,300):
         sys.stdout.flush()
         time.sleep(1.0)
 
-if not network.is_ready:
-    print(".")
-    print("Network is not ready but continue anyway")
 
+# Set temps and get values for list of nodes (-n) to generate output json with values
+jsondata = {}
 
-network.nodes[4].set_thermostat_mode("Heat")
-network.nodes[4].set_thermostat_heating(22.5)
+i=0
+for val in args.nodeids :
+  content={}
+  if (len(args.nodeTemp)>i):
+    if (args.nodeTemp[i]>0):
+      # Check current set Temp
+      PresentSet = args.nodeTemp[i]
+      for val2 in network.nodes[val].get_thermostats() :
+        if (network.nodes[val].values[val2].label=="Heat"):
+          PresentSet = network.nodes[val].get_thermostat_value(val2)
+      # Set Temp ONLY if need to be changed
+      if (PresentSet!=args.nodeTemp[i]):
+        #print("Node " + str(val) + ", Temp change from " + str(PresentSet) + ", to " + str(args.nodeTemp[i]))
+        network.nodes[val].set_thermostat_mode("Heat")
+        network.nodes[val].set_thermostat_heating(args.nodeTemp[i])
+        content['comfortTemp'] = args.nodeTemp[i]
+  # Get temp:
+  for valT in network.nodes[val].get_sensors() :
+    temp = network.nodes[val].get_sensor_value(valT)
+    Unit = network.nodes[val].values[valT].units
+    #print("Temp=" + str(temp) + str(Unit))
+  # Get battery level:
+  batL = network.nodes[val].get_battery_level()
+  #print("Battery=" + str(batL))
+  #print("nodeID="+str(val)) #args.nodeids[i]
+  content['ID']           = args.nodeids[i]
+  content['manufacturer'] = "zWave"
+  content['temperature']  = round(temp,2)
+  content['battery']      = batL
+  jsondata['Sensor'+str(val)]   = content
+  i=i+1
 
-# Get temp:
-for val in network.nodes[4].get_sensors() :
-  temp = network.nodes[4].get_sensor_value(val)
-  Unit = network.nodes[4].values[val].units
-  print("Temp=" + str(temp) + str(Unit))
+#Output json with node values (thermostat)
+print(json.dumps(jsondata))
 
-
-# Get battery level:
-batL = network.nodes[4].get_battery_level()
-print("Battery=" + str(batL))
-
-
-
-
-print("------------------------------------------------------------")
-print("Stop network")
-print("------------------------------------------------------------")
+# Stop Zwave Network
 network.stop()

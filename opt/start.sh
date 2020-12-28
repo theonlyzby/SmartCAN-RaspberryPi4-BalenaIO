@@ -26,10 +26,16 @@ if [ ! -d /data/mysql ]; then
 	chmod 777 /data/www/smartcan/www/conf/*
 	chmod 777 /data/www/smartcan/www/conf/config.php
 	chmod 777 /data/www/smartcan/www/test.txt
+	chmod 777 /data/www/log/SmartCAN-WebAdmin.log
 	mkdir /data/www/backups
 	chmod 777 /data/www/backups
+	chmod 777 /data/www/smartcan/uploads
+	chmod 777 /data/www/smartcan/uploads/
 	cp /usr/local/nginx/conf/nginx.conf /data/sys-files/nginx.conf
 fi
+
+# Define localhost into Hosts
+echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
 
 # Set time to correct Timezone
 # Default to UTC if no TIMEZONE env variable is set
@@ -37,9 +43,6 @@ echo "Setting time zone to ${TIMEZONE=UTC}"
 # This only works on Debian-based images
 echo "${TIMEZONE}" > /etc/timezone
 dpkg-reconfigure tzdata
-
-# Set python3 as default interpreter
-alias python=python3
 
 # Generate Env Variable => Container Start Date & Time
 export CONTAINER_START=$( stat /proc/1/cmdline | grep Modify | awk '{print $2 " " $3}' )

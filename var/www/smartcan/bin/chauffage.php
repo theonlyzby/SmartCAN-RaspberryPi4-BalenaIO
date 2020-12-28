@@ -86,6 +86,7 @@
   $retour      = mysqli_query($DB,"SELECT `valeur` FROM `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` WHERE `clef` = 'boiler';");
   $row         = mysqli_fetch_array($retour, MYSQLI_BOTH);
   $etat_boiler = $row[0];
+  /* Status Warm Water probe into Boiler (if present) */
   if ($circulateureauchaude!=0) {
     $retour      = mysqli_query($DB,"SELECT `valeur` FROM `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` WHERE `clef` = 'warm_water';");
     $row         = mysqli_fetch_array($retour, MYSQLI_BOTH);
@@ -119,13 +120,16 @@
 	  if ($BoilerOEM!="") {
 		$grad_FullName = $BoilerOEM . "_gradateur";
 	    $grad_boiler   = new $grad_FullName();
-		$NOK=0; if ($etat_boiler==0) {
+		$NOK=0;
+		if ($etat_boiler==0) {
 		  // Test reachability Boiler Module
 		  $NOK = $grad_boiler->test_reachability($BoilerOEM, $BoilerCard, $BoilerOUT, "SmartCAN-ALERT", "Boiler-Module-UNREACHABLE");
 		  //echo("Unreachable = " . $NOK . CRLF);
-		  // Heating Indication on Nest
+		  // SET Boiler Indication on Nest
 		  mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '1' WHERE `clef` = 'boiler';");
 		} // END IF
+		
+		
 		if ($NOK==0) {
 		  $grad_boiler->allumer($BoilerCard, $BoilerOUT, 0, 0x32);
 		  //echo("Boiler ON, absence=$absence, periode_chauffe=$periode_chauffe, periode_boiler=$periode_boiler, moyenne_actuelle=$moyenne_actuelle, Mini=".($tempmini+($voulu3-$voulu)) .CRLF);
@@ -134,10 +138,11 @@
 		    if ($HeaterOEM!="") {
 	          $grad_FullName = $HeaterOEM . "_gradateur";
 		      $gradateur     = new $grad_FullName();
-			  $NOK=0; if ($chaudiere==0) {
+			  $NOK=0;
+			  if ($chaudiere==0) {
 			    $NOK = $gradateur->test_reachability($HeaterOEM, $HeaterCard, $HeaterOUT, "SmartCAN-ALERT", "Heater-Module-UNREACHABLE");
 			    //echo("Unreachable = " . $NOK . CRLF);
-				// Heating Indication on Nest
+				// SET Heating Indication on Nest
 				mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '1' WHERE `clef` = 'chaudiere';");
 			  } // END IF
 			  if ($NOK==0) {
@@ -155,23 +160,24 @@
 	  if ($BoilerOEM!="") {
 	    $grad_FullName = $BoilerOEM . "_gradateur";
 		$grad_boiler    = new $grad_FullName();
-		$NOK=0; if ($etat_boiler==1) {
+		$NOK=0;
+		if ($etat_boiler==1) {
 		  // Test reachability Boiler Module
 		  $NOK = $grad_boiler->test_reachability($BoilerOEM , $BoilerCard, $BoilerOUT, "SmartCAN-ALERT", "Boiler-Module-UNREACHABLE");
 		  //echo("Unreachable = " . $NOK . CRLF);
-		  // Heating Indication on Nest
+		  // Set NO Boiler Indication on Nest
 		  mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '0' WHERE `clef` = 'boiler';");
 		} // END IF
+		
 		if ($NOK==0) {
 		  $grad_boiler->eteindre($BoilerCard, $BoilerOUT, 0);
 		  //echo("Boiler OFF" .CRLF);
 		} // END IF ($NOK==0)
 	  } // END IF	
-	  // Clear HEAT Now when done
-	  mysqli_query($DB,"DELETE FROM `". TABLE_HEATING_TIMSESLOTS . "` WHERE `function`='HEATER' AND `days`='00000001' AND `stop`<='" . $Now . "';");
+	  
 	} // END IF
 		 
-	// Si ((Absent OU PAS Periode Chauffage OU PAS Periode Boiler) ET Moyenne>Temp Min) OU Moyenne>=Temperature Confort (ou Erruer Sonde)
+	// Si ((Absent OU PAS Periode Chauffage OU PAS Periode Boiler) ET Moyenne>Temp Min) OU Moyenne>=Temperature Confort (ou Erreur Sonde)
 	if ((($absence==1 || ($periode_chauffe==0 && $periode_boiler==0)) && $moyenne_actuelle>$tempmini+($voulu3-$voulu)) || ($moyenne_actuelle>=$voulu3 || $moyenne_actuelle=='0' )) {
 	  if ($HeaterOEM!="") {
 	    $grad_FullName = $HeaterOEM . "_gradateur";
@@ -179,12 +185,14 @@
 		$NOK=0; if ($chaudiere==1) {
 		  $NOK = $gradateur->test_reachability($HeaterOEM, $HeaterCard, $HeaterOUT, "SmartCAN-ALERT", "Heater-Module-UNREACHABLE");
 		  //echo("Heater Unreachable = " . $NOK . CRLF);
-		  // NOT Heating Indication on Nest
+		  // Set NO Heating Indication on Nest
 	      mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '0' WHERE `clef` = 'chaudiere';");
 		} // END IF
 		if ($NOK==0) {
 	      $gradateur->eteindre($HeaterCard, $HeaterOUT, 0);
 	      //echo("Circulateur OFF" .CRLF);
+		  // Clear HEAT Now when done
+	      mysqli_query($DB,"DELETE FROM `". TABLE_HEATING_TIMSESLOTS . "` WHERE `function`='HEATER' AND `days`='00000001' AND `stop`<='" . $Now . "';");
 		} // END IF ($NOK==0)
 	  } // END IF
 	} // END IF
@@ -197,20 +205,22 @@
 		  /* SI LA TEMPERATURE VOULUE EST SUPERIEUR A CELLE DE LA MAISON */
 		  if (((( $voulu2 >= $moyenne_actuelle && $moyenne_actuelle != '0' ) && ($absence==0 && $periode_chauffe>=1)) || ($tempmini>$moyenne_actuelle && $moyenne_actuelle!='0')) 
 				&& ($periode_boiler==0)) {
-			echo("\nHEATER on(HeaterOEM=$HeaterOEM)");
+			//echo("\nHEATER on(HeaterOEM=$HeaterOEM)");
 			if ($HeaterOEM!="") {
 	          $grad_FullName = $HeaterOEM . "_gradateur";
 		      $gradateur     = new $grad_FullName();
-			  $NOK=0; if ($chaudiere==0) {
+			  $NOK=0;
+			  if ($chaudiere==0) {
 			    $NOK = $gradateur->test_reachability($HeaterOEM, $HeaterCard, $HeaterOUT, "SmartCAN-ALERT", "Heater-Module-UNREACHABLE");
 			    //echo("Heater Unreachable = " . $NOK . CRLF);
+				// SET Heating Indication on Nest
+			    mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '1' WHERE `clef` = 'chaudiere';");
 			  } // END IF
 			  if ($NOK==0) {
 	            $gradateur->allumer($HeaterCard, $HeaterOUT, 0, 0x32);
-			    echo("\nHEATER on(2)");
+			    //echo("\nHEATER on(2)");
 			  } // END IF ($NOK==0)
-			  // Heating Indication on Nest
-			  mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '1' WHERE `clef` = 'chaudiere';");
+			  
 			} // END IF
 			if ( $chaudiere == '0' ) {
 			  if (DEBUG_AJAX) { 
@@ -221,19 +231,20 @@
 		  } // ENDIF
 		  /* SI LA TEMPERATURE MOYENNE EST SUPERIEUR A LA VOULUE ou absence ou pas de periode chauffe ou ... priorité eau chaude*/
 		  if (( ($moyenne_actuelle >= $voulu3 && $tempmini<$moyenne_actuelle+1) || $moyenne_actuelle == '0' ) || ($absence==1 || $periode_chauffe==0) || ($periode_boiler>=1)) {
-		    echo("\nHEATER Off(HeaterOEM=$HeaterOEM)");
+		    //echo("\nHEATER Off(HeaterOEM=$HeaterOEM)");
 			if ($HeaterOEM!="") {
 	          $grad_FullName = $HeaterOEM . "_gradateur";
 		      $gradateur     = new $grad_FullName();
-			  $NOK=0; if ($chaudiere==1) {
+			  $NOK=0;
+			  if ($chaudiere==1) {
 			    $NOK = $gradateur->test_reachability($HeaterOEM, $HeaterCard, $HeaterOUT, "SmartCAN-ALERT", "Heater-Module-UNREACHABLE");
 				//echo("Heater Unreachable = " . $NOK . CRLF);
-				// Heating Indication on Nest
+				// Set NO Heating Indication on Nest
 			    mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '0' WHERE `clef` = 'chaudiere';");
 			  } // END IF
 			  if ($NOK==0) {
 		        $gradateur->eteindre($HeaterCard, $HeaterOUT, 0);
-			    echo("\nHEATER Off\n");
+			    //echo("\nHEATER Off\n");
 			  } // END IF ($NOK==0)
 		    } // END IF
 			//$gradateur->eteindre(CARTE_CHAUFFAGE, SORTIE_CHAUFFAGE, 0);
@@ -262,15 +273,16 @@
 			  if ($BoilerOEM!="") {
 				$grad_FullName = $BoilerOEM . "_gradateur";
 				$grad_boiler    = new $grad_FullName();
-				$NOK=0; if ($etat_boiler==0) {
+				$NOK=0;
+				if ($etat_boiler==0) {
 			      $NOK = $grad_boiler->test_reachability($BoilerOEM, $BoilerCard, $BoilerOUT, "SmartCAN-ALERT", "Boiler-Module-UNREACHABLE");
-				  //echo("HBoiler Unreachable = " . $NOK . CRLF);
-				  // Heating Indication on Nest
+				  //echo("Boiler Unreachable = " . $NOK . CRLF);
+				  // SET Boiler Indication on Nest
 			      mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '1' WHERE `clef` = 'boiler';");
 			    } // END IF
 			    if ($NOK==0) {
 				  $grad_boiler->allumer($BoilerCard, $BoilerOUT, 0, 0x32);
-				  echo("\nBOILER on\n");
+				  //echo("\nBOILER on\n");
 		        } // END IF
 			  } // END IF
 			  if (($etat_boiler == '0') && (DEBUG_AJAX)) { 
@@ -285,15 +297,16 @@
 			  if ($BoilerOEM!="") {
 			    $grad_FullName = $BoilerOEM . "_gradateur";
 			    $grad_boiler    = new $grad_FullName();
-				$NOK=0; if ($etat_boiler==1) {
+				$NOK=0;
+				if ($etat_boiler==1) {
 			      $NOK = $grad_boiler->test_reachability($BoilerOEM, $BoilerCard, $BoilerOUT, "SmartCAN-ALERT", "Boiler-Module-UNREACHABLE");
 				  //echo("HBoiler Unreachable = " . $NOK . CRLF);
-				  // Heating Indication on Nest
+				  // Set NO Boiler Indication on Nest
 			      mysqli_query($DB,"UPDATE `" . TABLE_CHAUFFAGE_CLEF_TEMP . "` SET `valeur` = '0' WHERE `clef` = 'boiler';");
 			    } // END IF
 			    if ($NOK==0) {
 			      $grad_boiler->eteindre($BoilerCard, $BoilerOUT, 0);
-				  echo("\nBOILER off\n");
+				  //echo("\nBOILER off\n");
 				} // END IF
 		      } // END IF			  
 			  if ($etat_boiler == '1') {

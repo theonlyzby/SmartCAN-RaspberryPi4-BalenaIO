@@ -467,6 +467,40 @@ INSERT INTO `ha_thermostat_timeslots` VALUES (1,'HEATER', '1111111','11111110','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ha_thermostat_zones`
+--
+
+CREATE TABLE `ha_thermostat_zones` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ZoneNber` int(11) NOT NULL,
+  `Name` varchar(25) NOT NULL,
+  `Color_Name` varchar(14) NOT NULL,
+  `Color_Code` varchar(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `ha_thermostat_zones`
+--
+
+INSERT INTO `ha_thermostat_zones` (`id`, `ZoneNber`, `Name`, `Color_Name`, `Color_Code`) VALUES
+(1, 2, '', 'Ruby', '9c1b05'),
+(2, 3, '', 'Copper', '755210'),
+(3, 4, '', 'Olive', '157510'),
+(4, 5, '', 'Cyan', '189da1'),
+(5, 6, '', 'Ocean', '231075'),
+(6, 7, '', 'PurpleHaze', '751033');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `ha_thermostat_zones`
+--
+ALTER TABLE `ha_thermostat_zones`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Table structure for table `ha_vibe_elements`
 --
 

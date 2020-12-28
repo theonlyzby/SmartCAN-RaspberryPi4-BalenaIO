@@ -93,3 +93,9 @@
   box-sizing: border-box;
   margin-top: -1px;
 }
+  a[smartcan-title]:hover:after{
+    content: attr(smartcan-title);
+    background: black; 
+    position: absolute;
+    left: 10%;
+    top: 150%;}

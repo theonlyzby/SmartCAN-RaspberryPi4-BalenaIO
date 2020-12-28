@@ -400,7 +400,7 @@ document.getElementById("moveMe"+e).src="../www/images/outputs/"+img+"_off.png";
             "</a> <span class='rss-date'></span></li>");
     } // End IF
     $i++;
-  } // End WHile
+  } // End While
   echo("</td><td width='30%' style='vertical-align:middle'><a href='javascript:void();' " .
        "onClick=\"showOverlay('ChangeImg','Lvl_Name');\">" .
        "<img src='./images/ChangeButton.jpg' width='70px' heigth='60px' " .
