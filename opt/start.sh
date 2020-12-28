@@ -73,6 +73,7 @@ chmod 777 /data/www/smartcan/www/images/plans
 chmod 777 /data/www/smartcan/www/js/
 chmod 777 /data/www/smartcan/www/js/weather.js
 chmod 777 /data/www/smartcan/www/html/nest/nest.php
+chmod 777 /var/phpmyadmin/tmp
 
 # Update SmartCAN files (if needed)
 cp -r /var/www/smartBACKUP/* /data/www/smartcan/
